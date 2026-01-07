@@ -19,14 +19,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: windowScene)
-        let onboardingVC = OnboardingPageVC(
-            transitionStyle: .scroll,
-            navigationOrientation: .horizontal)
         
+        let navController = UINavigationController()
+        navController.navigationBar.isHidden = true
         
-        window.rootViewController = onboardingVC
-        self.window = window
+        let hasSeenOnboarding = UserDefaults.standard.bool(
+            forKey: AppStorageKeys.hasSeenOnboarding
+        )
+        
+        if hasSeenOnboarding {
+            // User already saw onboarding → go straight to Auth
+            let authVC = ViewController()
+            navController.setViewControllers([authVC], animated: false)
+        } else {
+            // First launch → show onboarding
+            let onboardingVC = OnboardingPageVC(
+                transitionStyle: .scroll,
+                navigationOrientation: .horizontal
+            )
+            navController.setViewControllers([onboardingVC], animated: false)
+        }
+        
+        window.rootViewController = navController
         window.makeKeyAndVisible()
+        self.window = window
         
     }
 

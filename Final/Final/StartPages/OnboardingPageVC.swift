@@ -7,6 +7,10 @@
 
 import UIKit
 
+enum AppStorageKeys {
+    static let hasSeenOnboarding = "hasSeenOnboarding"
+}
+
 final class OnboardingPageVC: UIPageViewController {
     
     private let dotsView = OnboardingDotsView(numberOfDots: 3)
@@ -16,7 +20,9 @@ final class OnboardingPageVC: UIPageViewController {
         let second = OnboardingSecondVC()
         
         first.nextButton.addTarget(self, action: #selector(goToNextPage), for: .touchUpInside)
-        
+        second.onContinueTapped = { [weak self] in
+            self?.goToAuth()
+        }
         return [first, second]
     }()
     
@@ -31,6 +37,13 @@ final class OnboardingPageVC: UIPageViewController {
         dotsView.setActiveDot(index: 1)
     }
     
+    func goToAuth() {
+        UserDefaults.standard.set(true, forKey: AppStorageKeys.hasSeenOnboarding)
+
+        let authVC = ViewController()
+        navigationController?.pushViewController(authVC, animated: true)
+    }
+
     private func setupDots() {
         view.addSubview(dotsView)
         dotsView.translatesAutoresizingMaskIntoConstraints = false
