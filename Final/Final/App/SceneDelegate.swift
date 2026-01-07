@@ -28,11 +28,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         
         if hasSeenOnboarding {
-            // User already saw onboarding → go straight to Auth
-            let authVC = ViewController()
-            navController.setViewControllers([authVC], animated: false)
+            let registrationVC = RegistrationVC()
+            navController.setViewControllers([registrationVC], animated: false)
         } else {
-            // First launch → show onboarding
             let onboardingVC = OnboardingPageVC(
                 transitionStyle: .scroll,
                 navigationOrientation: .horizontal

@@ -40,8 +40,8 @@ final class OnboardingPageVC: UIPageViewController {
     func goToAuth() {
         UserDefaults.standard.set(true, forKey: AppStorageKeys.hasSeenOnboarding)
 
-        let authVC = ViewController()
-        navigationController?.pushViewController(authVC, animated: true)
+        let registrationVC = RegistrationVC()
+        navigationController?.pushViewController(registrationVC, animated: true)
     }
 
     private func setupDots() {
