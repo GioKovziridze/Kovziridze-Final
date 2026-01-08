@@ -40,10 +40,10 @@ final class RegistrationVC: UIViewController {
         return label
     }()
 
-    private let usernameField = RegistrationVC.makeGlassTextField("Username")
-    private let emailField = RegistrationVC.makeGlassTextField("Email")
-    private let passwordField = RegistrationVC.makeGlassTextField("Password", secure: true)
-    private let confirmPasswordField = RegistrationVC.makeGlassTextField("Confirm Password", secure: true)
+    private let usernameField = UITextField.makeGlassTextField("Enter your ysername")
+    private let emailField = UITextField.makeGlassTextField("Enter Email")
+    private let passwordField = UITextField.makeGlassTextField("Enter your password", secure: true)
+    private let confirmPasswordField = UITextField.makeGlassTextField("Confirm Password", secure: true)
     
     private let cityField: UITextField = {
         let field = UITextField()
@@ -128,7 +128,7 @@ final class RegistrationVC: UIViewController {
     private let continueEmailButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Continue with Email", for: .normal)
-        button.setTitleColor(.systemBlue, for: .normal)
+        button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
         button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.25)
         button.layer.cornerRadius = 16
@@ -141,11 +141,11 @@ final class RegistrationVC: UIViewController {
     private let googleLoginButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Login with Google", for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
         button.backgroundColor = UIColor.clear
         button.layer.cornerRadius = 16
-        button.layer.borderWidth = 2
+        button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.orange.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -171,28 +171,11 @@ final class RegistrationVC: UIViewController {
         setupFieldsStack()
         setupRegisterButton()
         setupButtons()
-//        setupKeyboardObservers()
 
         registerButton.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
     // MARK: - Setup
-    
-    private func makeLabeledField(title: String, field: UITextField) -> UIStackView {
-        let label = UILabel()
-        label.text = title
-        label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .secondaryLabel
-
-        let stack = UIStackView(arrangedSubviews: [label, field])
-        stack.axis = .vertical
-        stack.spacing = 6
-        return stack
-    }
 
 
     private func setupScrollView() {
@@ -224,29 +207,30 @@ final class RegistrationVC: UIViewController {
         contentStack.addArrangedSubview(stackViewForInputFields)
 
         stackViewForInputFields.addArrangedSubview(
-            makeLabeledField(title: "Username", field: usernameField)
+            UIStackView.makeLabeledField(title: "Username", field: usernameField)
         )
 
         stackViewForInputFields.addArrangedSubview(
-            makeLabeledField(title: "Email", field: emailField)
+            UIStackView.makeLabeledField(title: "Email", field: emailField)
         )
 
         stackViewForInputFields.addArrangedSubview(
-            makeLabeledField(title: "City", field: cityField)
+            UIStackView.makeLabeledField(title: "City", field: cityField)
         )
 
         stackViewForInputFields.addArrangedSubview(
-            makeLabeledField(title: "Password", field: passwordField)
+            UIStackView.makeLabeledField(title: "Password", field: passwordField)
         )
 
         stackViewForInputFields.addArrangedSubview(
-            makeLabeledField(title: "Confirm Password", field: confirmPasswordField)
+            UIStackView.makeLabeledField(title: "Confirm Password", field: confirmPasswordField)
         )
 
         stackViewForInputFields.addArrangedSubview(errorLabel)
+        contentStack.setCustomSpacing(40, after: stackViewForInputFields)
 
         }
-    }
+    
 
     private func setupRegisterButton() {
         contentStack.addArrangedSubview(registerButton)
@@ -269,69 +253,31 @@ final class RegistrationVC: UIViewController {
         ])
     }
 
-//    TODO: - setup proper keyboard handling
-//
-//    private func setupKeyboardObservers() {
-//        NotificationCenter.default.addObserver(
-//            self,
-//            selector: #selector(keyboardWillShow),
-//            name: UIResponder.keyboardWillShowNotification,
-//            object: nil
-//        )
-//        NotificationCenter.default.addObserver(
-//            self,
-//            selector: #selector(keyboardWillHide),
-//            name: UIResponder.keyboardWillHideNotification,
-//            object: nil
-//        )
-//    }
-//
-//    @objc private func keyboardWillShow(notification: NSNotification) {
-//        if let keyboardSize = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-//            scrollView.contentInset.bottom = keyboardSize.height
-//            scrollView.verticalScrollIndicatorInsets.bottom = keyboardSize.height
-//        }
-//    }
-//
-//    @objc private func keyboardWillHide(notification: NSNotification) {
-//        scrollView.contentInset.bottom = 0
-//        scrollView.verticalScrollIndicatorInsets.bottom = 0
-//    }
+//    TODO: - setup proper keyboard handling (Notification Center)
 
     // MARK: - Validation
 
+    
     @objc private func registerTapped() {
         errorLabel.isHidden = true
-
-        guard
-            let username = usernameField.text, !username.isEmpty,
-            let email = emailField.text, !email.isEmpty,
-            let city = cityField.text, !city.isEmpty,
-            let password = passwordField.text, !password.isEmpty,
-            let confirmPassword = confirmPasswordField.text, !confirmPassword.isEmpty
-        else {
-            showError("Please fill out all fields.")
-            return
+        
+        do {
+            try AuthValidator.validateRegistration(
+                username: usernameField.text,
+                email: emailField.text,
+                city: cityField.text,
+                password: passwordField.text,
+                confirmPassword: confirmPasswordField.text
+            )
+            
+            print("Registration valid")
+            //API call
+            
+        } catch {
+            showError(error.localizedDescription)
         }
-
-        if !email.contains("@") || !email.contains(".com") {
-            showError("Please enter a valid email address.")
-            return
-        }
-
-        if password.count < 6 {
-            showError("Password must be at least 6 characters.")
-            return
-        }
-
-        if password != confirmPassword {
-            showError("Passwords do not match.")
-            return
-        }
-
-        print("Registration valid")
-        // Call your API here
     }
+
 
     private func showError(_ message: String) {
         errorLabel.text = message
@@ -340,26 +286,7 @@ final class RegistrationVC: UIViewController {
 
     // MARK: - Helpers
 
-    private static func makeGlassTextField(
-        _ placeholder: String,
-        secure: Bool = false
-    ) -> UITextField {
-        let field = UITextField()
-        field.placeholder = placeholder
-        field.isSecureTextEntry = secure
-        field.autocapitalizationType = .none
-
-        field.backgroundColor = UIColor.white.withAlphaComponent(0.25)
-        field.layer.cornerRadius = 14
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.gray.withAlphaComponent(0.3).cgColor
-
-        field.heightAnchor.constraint(equalToConstant: 48).isActive = true
-        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: 0))
-        field.leftViewMode = .always
-        field.translatesAutoresizingMaskIntoConstraints = false
-        return field
-    }
+   
 }
 
 // MARK: - Picker
