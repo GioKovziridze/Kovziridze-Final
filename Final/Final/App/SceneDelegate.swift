@@ -28,8 +28,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         
         if hasSeenOnboarding {
-            let registrationVC = RegistrationVC()
-            navController.setViewControllers([registrationVC], animated: false)
+            let authContainer = AuthContainerVC()
+            navController.setViewControllers([authContainer], animated: false)
         } else {
             let onboardingVC = OnboardingPageVC(
                 transitionStyle: .scroll,
