@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 import FirebaseAuth
+import FirebaseCore
+import GoogleSignIn
 
 final class LoginViewModel {
     
@@ -19,6 +21,7 @@ final class LoginViewModel {
     private let networkManager: NetworkManagerProtocol
     private var cancellables = Set<AnyCancellable>()
     
+
     // MARK: - Init
     init(networkManager: NetworkManagerProtocol = NetworkManager.shared) {
         self.networkManager = networkManager
@@ -26,10 +29,8 @@ final class LoginViewModel {
     
     // MARK: - Login
     func login(email: String?, password: String?) {
-        // Reset previous error
         onError?("")
         
-        // Validate fields
         guard let email, !email.isEmpty,
               let password, !password.isEmpty else {
             onError?("Please fill in all fields")
@@ -46,24 +47,79 @@ final class LoginViewModel {
             return
         }
         
-        // Show loading
         onLoading?(true)
-        
-        // Call NetworkManager
+
         networkManager.loginUser(email: email, password: password)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 self?.onLoading?(false)
-                switch completion {
-                case .failure(let error):
+                if case let .failure(error) = completion {
                     self?.onError?(error.localizedDescription)
-                case .finished:
-                    break
                 }
             } receiveValue: { [weak self] userModel in
-                UserStore.shared.currentUser = userModel
-                self?.onSuccess?(userModel)
+                guard let self = self else { return }
+                
+                // Save user to Firestore / fetch full UserModel
+                UserStore.shared.fetchUser(uid: userModel.id ?? "") { fullUser in
+                    self.onSuccess?(fullUser)
+                }
             }
             .store(in: &cancellables)
     }
+    
+
+    // MARK: - Google Sign In
+    func signInWithGoogle(presenting viewController: UIViewController) {
+        guard let clientID = FirebaseApp.app()?.options.clientID else {
+            onError?("Missing Google Client ID")
+            return
+        }
+        
+        onLoading?(true)
+        
+        let config = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = config
+        
+        GIDSignIn.sharedInstance.signIn(withPresenting: viewController) { [weak self] result, error in
+            guard let self else { return }
+            
+            if let error {
+                self.onLoading?(false)
+                self.onError?(error.localizedDescription)
+                return
+            }
+            
+            guard
+                let user = result?.user,
+                let idToken = user.idToken?.tokenString
+            else {
+                self.onLoading?(false)
+                self.onError?("Google sign-in failed")
+                return
+            }
+            
+            let credential = GoogleAuthProvider.credential(
+                withIDToken: idToken,
+                accessToken: user.accessToken.tokenString
+            )
+            
+            Auth.auth().signIn(with: credential) { [weak self] result, error in
+                guard let self else { return }
+                self.onLoading?(false)
+                
+                if let error {
+                    self.onError?(error.localizedDescription)
+                    return
+                }
+                
+                // Fetch user via UserStore
+                if let uid = result?.user.uid {
+                    UserStore.shared.fetchUser(uid: uid) { [weak self] userModel in
+                        self?.onSuccess?(userModel)
+                    }
+                }
+            }
+        }
+    }
+
 }

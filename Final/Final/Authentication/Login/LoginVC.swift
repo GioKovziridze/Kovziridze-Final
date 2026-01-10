@@ -26,7 +26,8 @@ final class LoginVC: UIViewController {
 
     private let scrollView = UIScrollView()
     private let contentStack = UIStackView()
-
+   
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Step Into the Future\nof Shopping"
@@ -175,8 +176,14 @@ final class LoginVC: UIViewController {
         stack.axis = .horizontal
         stack.spacing = 16
         stack.distribution = .fillEqually
+        
+        googleButton.addTarget(self, action: #selector(googleSignInTapped), for: .touchUpInside)
 
         contentStack.addArrangedSubview(stack)
+    }
+    
+    @objc private func googleSignInTapped() {
+        viewModel.signInWithGoogle(presenting: self)
     }
 
     private func setupBottomLabel() {
@@ -228,6 +235,7 @@ final class LoginVC: UIViewController {
                 self?.spinner.stopAnimating()
             }
         }
+      
     }
     
     private func showError(_ message: String) {

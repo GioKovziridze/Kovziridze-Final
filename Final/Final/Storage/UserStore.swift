@@ -19,27 +19,51 @@ final class UserStore: ObservableObject {
     
     private init() {}
     
-    func fetchUser(uid: String) {
+    func fetchUser(uid: String, completion: ((UserModel) -> Void)? = nil) {
         let db = Firestore.firestore()
-        listener = db.collection("users").document(uid)
-            .addSnapshotListener { [weak self] snapshot, error in
-                guard let snapshot = snapshot, snapshot.exists else { return }
-                let data = snapshot.data()!
-                let user = UserModel(
-                    id: uid,
-                    username: data["username"] as? String ?? "",
-                    email: data["email"] as? String ?? "",
-                    city: data["city"] as? String ?? "",
-                    cart: (data["cart"] as? [[String: Any]] ?? []).compactMap {
-                        guard let id = $0["id"] as? String,
-                              let quantity = $0["quantity"] as? Int else { return nil }
-                        return CartItem(id: id, quantity: quantity)
-                    },
-                    favorites: data["favorites"] as? [String] ?? []
-                )
-                self?.currentUser = user
+        let userRef = db.collection("users").document(uid)
+        
+        userRef.getDocument { [weak self] snapshot, error in
+            guard let self = self else { return }
+            
+            if let error {
+                print("Error fetching user:", error)
+                return
             }
+            
+            if let snapshot, snapshot.exists,
+               let user = try? snapshot.data(as: UserModel.self) {
+                self.currentUser = user
+                completion?(user)
+                return
+            }
+            
+            guard let firebaseUser = Auth.auth().currentUser else { return }
+            let newUser = UserModel(
+                id: firebaseUser.uid,
+                username: firebaseUser.displayName ?? "New User",
+                email: firebaseUser.email ?? "",
+                city: "",
+                cart: [],
+                favorites: []
+            )
+            
+            do {
+                try userRef.setData(from: newUser) { err in
+                    if let err = err {
+                        print("Error creating user:", err)
+                    } else {
+                        self.currentUser = newUser
+                        completion?(newUser)
+                    }
+                }
+            } catch {
+                print("Error encoding user:", error)
+            }
+        }
     }
+
+
     
     func stopListening() {
         listener?.remove()
