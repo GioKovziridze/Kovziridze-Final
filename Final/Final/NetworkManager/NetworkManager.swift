@@ -22,9 +22,8 @@ final class NetworkManager: NetworkManagerProtocol {
     private init() {}
     
     private let db = Firestore.firestore()
-    private let baseURL = URL(string: "https://api.escuelajs.co/api/v1")
-    private let productAPI = "/products"
-    private let categoryAPI = "/categories"
+    private let baseURL = "https://api.escuelajs.co/api/v1/products"
+
     
     
     // MARK: - Register User
@@ -56,7 +55,7 @@ final class NetworkManager: NetworkManagerProtocol {
                         "cart": [],
                         "favorites": []
                     ]
-                    
+                     
                     self.db.collection("users").document(user.uid).setData(userData) { firestoreError in
                         if let firestoreError = firestoreError {
                             promise(.failure(firestoreError))
@@ -118,7 +117,7 @@ final class NetworkManager: NetworkManagerProtocol {
     }
     
     func fetchProducts() async throws -> [Product] {
-        guard let url = URL(string: "\(baseURL)/products") else {
+        guard let url = URL(string: baseURL) else {
                throw URLError(.badURL)
            }
         
