@@ -10,6 +10,7 @@ import SwiftUI
 @MainActor
 final class ProductStore: ObservableObject {
     @Published var products: [Product] = []
+    @Published var categories: [Category] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     static let shared = ProductStore()
@@ -25,6 +26,20 @@ final class ProductStore: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
             print("failed to load products")
+        }
+        
+        isLoading = false
+    }
+    
+    func loadCategories() async {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            categories = try await NetworkManager.shared.fetchCategoris()
+        } catch {
+            errorMessage = error.localizedDescription
+            print("failed to load categories")
         }
         
         isLoading = false

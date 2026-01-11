@@ -17,6 +17,7 @@ struct HomePage: View {
             header
                 .padding()
             promoBanner
+            
             HStack{
                 Text("Category")
                     .font(.headline)
@@ -26,10 +27,22 @@ struct HomePage: View {
                     .foregroundColor(.black)
             }
             .padding()
-            .task {
-                await store.loadProducts()// Only needs to be called once
-                print(store.products)
+            
+            Button {
+                
+            } label: {
+                Rectangle()
+                    .background(RoundedRectangle(cornerRadius: 15))
+                    .frame(width: 100, height: 60)
             }
+            
+        }
+        .task {
+            await store.loadProducts()
+            await store.loadCategories()
+            print(store.products)
+            print("---------------")
+            print(store.categories)
         }
     }
     
@@ -106,7 +119,7 @@ struct HomePage: View {
 
 
 }
-//#Preview {
-//    HomePage(userStore: UserStore.shared)
-//}
+#Preview {
+    HomePage()
+}
     

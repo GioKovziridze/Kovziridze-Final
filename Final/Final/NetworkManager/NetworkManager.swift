@@ -22,7 +22,8 @@ final class NetworkManager: NetworkManagerProtocol {
     private init() {}
     
     private let db = Firestore.firestore()
-    private let baseURL = "https://api.escuelajs.co/api/v1/products"
+    private let productURL = "https://api.escuelajs.co/api/v1/products"
+    private let categoryURL = "https://api.escuelajs.co/api/v1/categories"
 
     
     
@@ -117,9 +118,9 @@ final class NetworkManager: NetworkManagerProtocol {
     }
     
     func fetchProducts() async throws -> [Product] {
-        guard let url = URL(string: baseURL) else {
-               throw URLError(.badURL)
-           }
+        guard let url = URL(string: productURL) else {
+            throw URLError(.badURL)
+        }
         
         let (data, response) = try await URLSession.shared.data(from: url)
         
@@ -130,5 +131,22 @@ final class NetworkManager: NetworkManagerProtocol {
         
         let decoder = JSONDecoder()
         return try decoder.decode([Product].self, from: data)
+    }
+    
+    func fetchCategoris() async throws -> [Category] {
+        guard let url = URL(string: productURL) else {
+            throw URLError(.badURL)
+        }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              200..<300 ~= httpResponse.statusCode else {
+            throw URLError(.badServerResponse)
+        }
+        
+        let decoder = JSONDecoder()
+        return try decoder.decode([Category].self, from: data)
+        
     }
 }
