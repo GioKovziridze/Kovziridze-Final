@@ -13,6 +13,7 @@ final class ProductStore: ObservableObject {
     @Published var categories: [Category] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    
     static let shared = ProductStore()
     
     private init() {}
@@ -30,6 +31,17 @@ final class ProductStore: ObservableObject {
         
         isLoading = false
     }
+    
+    func loadCategories() async {
+        do {
+            categories = try await NetworkManager.shared.fetchCategories()
+            print(categories.count)
+        } catch {
+            errorMessage = error.localizedDescription
+            print("failed to load categories")
+        }
+    }
+    
     
    
 }

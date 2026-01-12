@@ -23,6 +23,7 @@ final class NetworkManager: NetworkManagerProtocol {
     
     private let db = Firestore.firestore()
     private let productURL = "https://fakestoreapi.com/products"
+    private let categoryURL = "https://fakestoreapi.com/products/categories"
    
 
     
@@ -131,6 +132,14 @@ final class NetworkManager: NetworkManagerProtocol {
         
         let decoder = JSONDecoder()
         return try decoder.decode([Product].self, from: data)
+    }
+    
+    func fetchCategories() async throws -> [Category] {
+        guard let url = URL(string: categoryURL) else {
+            throw URLError(.badURL)
+        }
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode([Category].self, from: data)
     }
     
 }

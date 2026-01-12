@@ -11,63 +11,62 @@ import SwiftUI
 struct HomePage: View {
     @ObservedObject private var userStore = UserStore.shared
     @ObservedObject private var store = ProductStore.shared
-   
-    //TODO: - remove this test category
     
-    @State private var selectedCategory: Category?
-
+   
+    
+    //TODO: - remove this later
+    
+    let homeCategories: [HomeCategory] = [
+        .init(title: "Men's clothing", subtitle: "312 Collections", icon: "tshirt.fill"),
+        .init(title: "women's clothing", subtitle: "231 Collections", icon: "shoeprints.fill"),
+        .init(title: "electronics", subtitle: "65 Collections", icon: "clock.fill"),
+        .init(title: "electronics", subtitle: "87+ Collection", icon: "gamecontroller.fill")
+    ]
+    
     var body: some View {
-        VStack(spacing: 20) {
-            header
-                .padding()
-            promoBanner
-            
-            HStack{
-                Text("Category")
+        ScrollView {
+            VStack(spacing: 20) {
+                header
+                promoBanner
+                
+                HStack{
+                    Text("Category")
+                        .font(.headline)
+                        .foregroundColor(.black)
+                    Spacer()
+                    Text("See all")
+                        .foregroundColor(.black)
+                }
+                .padding(16)
+                categoryGrid
+                
+                Text("Featured products")
                     .font(.headline)
                     .foregroundColor(.black)
-                Spacer()
-                Text("See all")
-                    .foregroundColor(.black)
-            }
-            .padding()
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(store.categories) { category in
-                        CategoryChip(
-                            category: category,
-                            title: category.displayName,
-                            icon: category.icon,
-                            isSelected: selectedCategory == category
-                        ) {
-                            selectedCategory = category
+                    .padding(.trailing, 200)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 16) {
+                        ForEach(store.products.prefix(5)) { product in
+                            ProductCardView(product: product)
                         }
                     }
+                    .padding(.horizontal)
+                    .padding(.bottom, 10)
                 }
-                .padding(.horizontal)
+                
+                
+                
+                
             }
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ForEach(store.products) { product in
-                        ProductCardView(product: product)
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.bottom, 10)
+            .task {
+                await store.loadProducts()
+                await store.loadCategories()
+                print("---------------")
+                print(store.categories.count)
             }
-            
-            
-
-            
         }
-        .task {
-            await store.loadProducts()
-            print(store.products)
-            print("---------------")
-            print(store.categories)
-        }
+        .scrollIndicators(.hidden)
     }
     
     
@@ -99,23 +98,35 @@ struct HomePage: View {
                         Capsule()
                             .stroke(Color.gray.opacity(0.25), lineWidth: 0.5)
                     )
-
+                    
                 } else {
                     Text("Welcome, guest!")
                         .font(.title)
                         .fontWeight(.semibold)
                 }
             }
-
+            
             Spacer()
-
+            
+            Button {
+                // profile action
+            } label: {
+                Image(systemName: "person.fill")
+                    .foregroundColor(.black)
+                    .frame(width: 44, height: 44)
+                    .background(Color(red: 0.55, green: 1.0, blue: 0.6).opacity(0.5))
+                    .clipShape(Circle())
+                    .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
+            }
+            .buttonStyle(.plain)
+            
             Button {
                 // favorite action
             } label: {
                 Image(systemName: "heart")
                     .foregroundColor(.black)
                     .frame(width: 44, height: 44)
-                    .background(Color(.lightGray).opacity(0.3))
+                    .background(Color(red: 0.55, green: 1.0, blue: 0.6).opacity(0.5))
                     .clipShape(Circle())
                     .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
             }
@@ -124,38 +135,61 @@ struct HomePage: View {
         .padding()
     }
     
-     var promoBanner: some View {
-        HStack(spacing: 16) {
+    var promoBanner: some View {
+        ZStack {
+            ZStack {
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color(red: 0.55, green: 1.0, blue: 0.6))
 
-            // TEXT SIDE
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Don’t miss out!")
-                    .font(.subheadline)
-                    .foregroundColor(.black)
-
-                Text("Discover the latest collections\npicked just for you.")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundColor(.black.opacity(0.7))
+                Circle()
+                    .fill(Color(red: 0.1, green: 0.6, blue: 0.35))
+                    .frame(width: 140, height: 140)
+                    .offset(x: 125, y: -100)
+                
+                Circle()
+                    .fill(Color(red: 0.85, green: 1.0, blue: 0.9))
+                    .frame(width: 160, height: 160)
+                    .offset(x: -155, y: 100)
             }
+            .clipShape(RoundedRectangle(cornerRadius: 20))
 
-            Spacer()
+            HStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Discover the latest collections")
+                        .font(.system(size: 29, weight: .bold))
+                        .foregroundColor(.black.opacity(0.7))
+                }
 
-            Image("model4")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 130, height: 180)
-                .offset(x: 0, y: 35)
+                Spacer()
+
+                Image("model4")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 130, height: 190)
+                    .offset(y: 35)
+            }
+            .padding()
         }
-        .padding(16)
-        .frame(width: 340, height: 180)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(CGColor(red: 0.5, green: 1.0, blue: 0.5, alpha: 1)))
-        )
+        .frame(width: 360, height: 150)
         .shadow(color: .black.opacity(0.12), radius: 6, x: 0, y: 4)
+        .padding()
+    }
+    
+    var categoryGrid: some View {
+        LazyVGrid(
+            columns: [
+                GridItem(.flexible(), spacing: 16),
+                GridItem(.flexible(), spacing: 16)
+            ],
+            spacing: 16
+        ) {
+            ForEach(homeCategories) { category in
+                HomeCategoryCard(category: category)
+            }
+        }
         .padding(.horizontal)
     }
+
 
 
 }

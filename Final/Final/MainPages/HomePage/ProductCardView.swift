@@ -17,7 +17,7 @@ struct ProductCardView: View {
             Image(product.image)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 180, height: 180)
+                .frame(width: 160, height: 160)
                 .clipShape(RoundedRectangle(cornerRadius: 18))
                 .clipped()
 

@@ -25,6 +25,9 @@ final class TabBarController: UITabBarController {
         let homeVC = UIHostingController(rootView: HomePage())
         homeVC.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house.fill"), tag: 0)
         
+        let exploreVC = UIHostingController(rootView: ExplorePage())
+        exploreVC.tabBarItem = UITabBarItem(title: "Explore", image: UIImage(systemName: "magnifyingglass"), tag: 3)
+        
         let profileVC = UIViewController()
         profileVC.view.backgroundColor = .systemBackground
         profileVC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 1)
@@ -33,15 +36,12 @@ final class TabBarController: UITabBarController {
         cartVC.view.backgroundColor = .systemBackground
         cartVC.tabBarItem = UITabBarItem(title: "Cart", image: UIImage(systemName: "cart.fill"), tag: 2)
         
-        let exploreVC = UIViewController()
-        exploreVC.view.backgroundColor = .systemBackground
-        exploreVC.tabBarItem = UITabBarItem(title: "Explore", image: UIImage(systemName: "magnifyingglass"), tag: 3)
         
         viewControllers = [
             UINavigationController(rootViewController: homeVC),
+            UINavigationController(rootViewController: exploreVC),
             UINavigationController(rootViewController: profileVC),
             UINavigationController(rootViewController: cartVC),
-            UINavigationController(rootViewController: exploreVC)
         ]
     }
 
@@ -49,13 +49,12 @@ final class TabBarController: UITabBarController {
         tabBar.backgroundImage = UIImage()
         tabBar.shadowImage = UIImage()
         tabBar.isTranslucent = true
-        tabBar.tintColor = UIColor(red: 0.5, green: 1.0, blue: 0.5, alpha: 1) // light green
+        tabBar.tintColor = UIColor(red: 0.5, green: 1.0, blue: 0.5, alpha: 1)
         tabBar.unselectedItemTintColor = .lightGray
 
-        // Add slim floating background
         backgroundView = UIView(frame: .zero)
-        backgroundView.backgroundColor = .darkGray
-        backgroundView.layer.cornerRadius = customTabBarHeight / 2 // capsule shape
+        backgroundView.backgroundColor = UIColor(.gray.opacity(0.3))
+        backgroundView.layer.cornerRadius = customTabBarHeight / 2
         backgroundView.layer.shadowColor = UIColor.black.cgColor
         backgroundView.layer.shadowOpacity = 0.15
         backgroundView.layer.shadowOffset = CGSize(width: 0, height: 5)
