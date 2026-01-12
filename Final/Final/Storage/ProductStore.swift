@@ -31,17 +31,5 @@ final class ProductStore: ObservableObject {
         isLoading = false
     }
     
-    func loadCategories() async {
-        isLoading = true
-        errorMessage = nil
-        
-        do {
-            categories = try await NetworkManager.shared.fetchCategoris()
-        } catch {
-            errorMessage = error.localizedDescription
-            print("failed to load categories")
-        }
-        
-        isLoading = false
-    }
+   
 }
