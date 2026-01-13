@@ -24,11 +24,17 @@ struct ExplorePage: View {
             ScrollView {
                 LazyVStack(spacing: 16) {
                     ForEach(filteredProducts) { product in
-                        ProductRowView(product: product)
+                        NavigationLink {
+                            ProductDetailsPage(product: product)
+                        } label: {
+                            ProductRowView(product: product)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal)
             }
+
         }
         .navigationTitle("Explore")
     }
@@ -51,6 +57,9 @@ struct ExplorePage: View {
             .padding(.horizontal)
         }
     }
+    
+    //TODO: - Add category filters
+    
     var filteredProducts: [Product] {
         guard !searchText.isEmpty else {
             return store.products
@@ -63,6 +72,7 @@ struct ExplorePage: View {
     }
 
 }
+//TODO: - move this to a separate file
 
 struct SearchBar: View {
     @Binding var text: String
@@ -85,7 +95,7 @@ struct SearchBar: View {
         )
     }
 }
-
+//TODO: - this too
 struct ProductRowView: View {
     let product: Product
 

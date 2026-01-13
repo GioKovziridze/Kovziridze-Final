@@ -11,32 +11,19 @@ import SwiftUI
 struct HomePage: View {
     @ObservedObject private var userStore = UserStore.shared
     @ObservedObject private var store = ProductStore.shared
-    
-   
-    
+
     //TODO: - remove this later
-    
-    let homeCategories: [HomeCategory] = [
-        .init(title: "Men's clothing", subtitle: "312 Collections", icon: "tshirt.fill"),
-        .init(title: "women's clothing", subtitle: "231 Collections", icon: "shoeprints.fill"),
-        .init(title: "electronics", subtitle: "65 Collections", icon: "clock.fill"),
-        .init(title: "electronics", subtitle: "87+ Collection", icon: "gamecontroller.fill")
-    ]
-    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
                 header
                 promoBanner
                 
-                HStack{
-                    Text("Category")
-                        .font(.headline)
-                        .foregroundColor(.black)
-                    Spacer()
-                    Text("See all")
-                        .foregroundColor(.black)
-                }
+                Text("Category")
+                    .font(.headline)
+                    .foregroundColor(.black)
+                    .padding(.trailing, 200)
+             
                 .padding(16)
                 categoryGrid
                 
@@ -48,12 +35,18 @@ struct HomePage: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(store.products.prefix(5)) { product in
-                            ProductCardView(product: product)
+                            NavigationLink {
+                                ProductDetailsPage(product: product)
+                            } label: {
+                                ProductCardView(product: product)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                     .padding(.horizontal)
                     .padding(.bottom, 10)
                 }
+
                 
                 
                 
@@ -183,14 +176,19 @@ struct HomePage: View {
             ],
             spacing: 16
         ) {
-            ForEach(homeCategories) { category in
-                HomeCategoryCard(category: category)
+            ForEach(store.categories) { category in
+                NavigationLink {
+                    CategoryProductsPage(category: category)
+                } label: {
+                    HomeCategoryCard(
+                        category: category,
+                        productCount: category.productCount(in: store.products)
+                    )
+                }
             }
         }
         .padding(.horizontal)
     }
-
-
 
 }
 

@@ -7,35 +7,29 @@
 
 import SwiftUI
 
-struct HomeCategory: Identifiable {
-    let id = UUID()
-    let title: String
-    let subtitle: String
-    let icon: String
-}
-
 struct HomeCategoryCard: View {
-    let category: HomeCategory
+    let category: Category
+    let productCount: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            
+
             Image(systemName: category.icon)
                 .font(.system(size: 20, weight: .semibold))
-                .foregroundColor(.white)
+                .foregroundColor(.black)
                 .padding(10)
                 .background(Color.white.opacity(0.25))
                 .clipShape(Circle())
 
             Spacer()
 
-            Text(category.title)
+            Text(category.displayName)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(.white)
+                .foregroundColor(.black)
 
-            Text(category.subtitle)
+            Text("\(productCount) Collections")
                 .font(.system(size: 13))
-                .foregroundColor(.white.opacity(0.8))
+                .foregroundColor(.black.opacity(0.8))
         }
         .padding(16)
         .frame(width: 170, height: 170)
