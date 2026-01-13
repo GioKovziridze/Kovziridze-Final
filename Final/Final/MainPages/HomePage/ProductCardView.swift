@@ -9,28 +9,39 @@ import SwiftUI
 
 struct ProductCardView: View {
     let product: Product
+    @State private var isFavorite = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
 
-            // IMAGE (REMOTE)
-            Image(product.image)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 160, height: 160)
-                .clipShape(RoundedRectangle(cornerRadius: 18))
-                .clipped()
+            ZStack(alignment: .topTrailing) {
+                Image(product.image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 130, height: 130)
+                    .clipShape(RoundedRectangle(cornerRadius: 18))
+                    .clipped()
 
-            // TITLE
+                Button {
+                    isFavorite.toggle()
+                } label: {
+                    Image(systemName: isFavorite ? "heart.fill" : "heart")
+                        .foregroundColor(isFavorite ? .red : .gray)
+                        .padding(8)
+                        .background(Color.white.opacity(0.9))
+                        .clipShape(Circle())
+                        .shadow(radius: 2)
+                }
+                .padding(.leading, 15)
+            }
+
             Text(product.title)
                 .font(.system(size: 15, weight: .semibold))
                 .lineLimit(2)
 
-            // PRICE
             Text("$\(product.price, specifier: "%.2f")")
                 .font(.system(size: 16, weight: .bold))
 
-            // RATING
             HStack(spacing: 4) {
                 ForEach(0..<5) { index in
                     Image(systemName: index < Int(product.rating.rate) ? "star.fill" : "star")
@@ -44,7 +55,7 @@ struct ProductCardView: View {
             }
         }
         .padding(12)
-        .frame(width: 200)
+        .frame(width: 170, height: 230)
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)

@@ -11,7 +11,7 @@ import SwiftUI
 
 final class TabBarController: UITabBarController {
 
-    private let customTabBarHeight: CGFloat = 70 // slim height
+    private let customTabBarHeight: CGFloat = 70
     private let floatingMargin: CGFloat = 22
     private var backgroundView: UIView!
 
@@ -50,10 +50,10 @@ final class TabBarController: UITabBarController {
         tabBar.shadowImage = UIImage()
         tabBar.isTranslucent = true
         tabBar.tintColor = UIColor(red: 0.5, green: 1.0, blue: 0.5, alpha: 1)
-        tabBar.unselectedItemTintColor = .lightGray
+        tabBar.unselectedItemTintColor = .white
 
         backgroundView = UIView(frame: .zero)
-        backgroundView.backgroundColor = UIColor(.gray.opacity(0.3))
+        backgroundView.backgroundColor = UIColor(.gray.opacity(0.6))
         backgroundView.layer.cornerRadius = customTabBarHeight / 2
         backgroundView.layer.shadowColor = UIColor.black.cgColor
         backgroundView.layer.shadowOpacity = 0.15
@@ -66,7 +66,7 @@ final class TabBarController: UITabBarController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let width = tabBar.frame.width - 40 // 20pt padding each side
+        let width = tabBar.frame.width - 40
         let height = customTabBarHeight
         let x: CGFloat = 20
         let y = view.frame.height - height - floatingMargin

@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct ExplorePage: View {
-//    @ObservedObject private var userStore = UserStore.shared
+    @ObservedObject private var userStore = UserStore.shared
     @ObservedObject private var store = ProductStore.shared
     @State private var selectedCategoryID: String?
-    
+
     @State private var searchText = ""
+    
+    let columns = [
+            GridItem(.flexible(), spacing: 16),
+            GridItem(.flexible(), spacing: 16)
+        ]
     
     var body: some View {
         VStack(spacing: 16) {
@@ -22,12 +27,12 @@ struct ExplorePage: View {
             categoryChips
             
             ScrollView {
-                LazyVStack(spacing: 16) {
+                LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(filteredProducts) { product in
                         NavigationLink {
                             ProductDetailsPage(product: product)
                         } label: {
-                            ProductRowView(product: product)
+                            ProductCardView(product: product)
                         }
                         .buttonStyle(.plain)
                     }
@@ -43,6 +48,14 @@ struct ExplorePage: View {
     var categoryChips: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
+                CategoryChip(
+                    category: nil,
+                    title: "All",
+                    icon: "square.grid.2x2",
+                    isSelected: selectedCategoryID == nil
+                ) {
+                    selectedCategoryID = nil
+                }
                 ForEach(store.categories) { category in
                     CategoryChip(
                         category: category,
@@ -50,7 +63,11 @@ struct ExplorePage: View {
                         icon: category.icon,
                         isSelected: selectedCategoryID == category.id
                     ) {
-                        selectedCategoryID = category.id
+                        if selectedCategoryID == category.id {
+                            selectedCategoryID = nil
+                        } else {
+                            selectedCategoryID = category.id
+                        }
                     }
                 }
             }
@@ -61,15 +78,23 @@ struct ExplorePage: View {
     //TODO: - Add category filters
     
     var filteredProducts: [Product] {
-        guard !searchText.isEmpty else {
-            return store.products
-        }
-        
-        return store.products.filter {
-            $0.title.localizedCaseInsensitiveContains(searchText)
-            || $0.category.name.localizedCaseInsensitiveContains(searchText)
+        store.products.filter { product in
+
+            let matchesCategory: Bool = {
+                guard let selectedCategoryID else { return true }
+                return product.category.id == selectedCategoryID
+            }()
+
+            let matchesSearch: Bool = {
+                guard !searchText.isEmpty else { return true }
+                return product.title.localizedCaseInsensitiveContains(searchText)
+                || product.category.name.localizedCaseInsensitiveContains(searchText)
+            }()
+
+            return matchesCategory && matchesSearch
         }
     }
+
 
 }
 //TODO: - move this to a separate file

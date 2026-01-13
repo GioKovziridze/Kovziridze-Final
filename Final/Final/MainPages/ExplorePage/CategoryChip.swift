@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CategoryChip: View {
-    let category: Category
+    let category: ProductCategory?
     let title: String
     let icon: String
     let isSelected: Bool

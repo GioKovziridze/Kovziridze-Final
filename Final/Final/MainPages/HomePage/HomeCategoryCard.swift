@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeCategoryCard: View {
-    let category: Category
+    let category: ProductCategory
     let productCount: Int
 
     var body: some View {

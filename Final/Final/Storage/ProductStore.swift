@@ -10,7 +10,7 @@ import SwiftUI
 @MainActor
 final class ProductStore: ObservableObject {
     @Published var products: [Product] = []
-    @Published var categories: [Category] = []
+    @Published var categories: [ProductCategory] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     

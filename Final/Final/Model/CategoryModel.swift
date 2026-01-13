@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Category: Identifiable, Decodable, Hashable {
+struct ProductCategory: Identifiable, Decodable, Hashable {
     let id: String
     let name: String
     
@@ -20,7 +20,7 @@ struct Category: Identifiable, Decodable, Hashable {
     }
 }
 
-extension Category {
+extension ProductCategory {
     var displayName: String {
         name.capitalized
     }

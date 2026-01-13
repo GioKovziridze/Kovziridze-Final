@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct CategoryProductsPage: View {
-    let category: Category
+    let category: ProductCategory
 
     @ObservedObject private var store = ProductStore.shared
 
@@ -23,7 +23,12 @@ struct CategoryProductsPage: View {
         ScrollView {
             LazyVStack(spacing: 16) {
                 ForEach(products) { product in
-                    ProductRowView(product: product)
+                    NavigationLink {
+                        ProductDetailsPage(product: product)
+                    } label: {
+                        ProductRowView(product: product)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .padding()

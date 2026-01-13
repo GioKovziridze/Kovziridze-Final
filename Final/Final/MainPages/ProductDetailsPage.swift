@@ -20,6 +20,7 @@ struct ProductDetailsPage: View {
                         .resizable()
                         .scaledToFit()
                         .frame(maxWidth: .infinity)
+                        .frame(height: 300)
                         .background(Color.gray.opacity(0.05))
                         .clipShape(RoundedRectangle(cornerRadius: 24))
                         .padding(.horizontal)
@@ -96,19 +97,36 @@ struct ProductDetailsPage: View {
 
                 Spacer()
 
-                Button {
-                    // add to cart logic
-                } label: {
-                    Text("Add to Cart")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.black)
-                        .padding(.horizontal, 28)
-                        .padding(.vertical, 14)
-                        .background(
-                            Capsule()
-                                .fill(Color(red: 0.55, green: 1.0, blue: 0.6))
-                        )
+                HStack(spacing: 12) {
+                    Button {
+                        // add to cart logicr
+                    } label: {
+                        Image(systemName: "cart.fill")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(Color(.darkGray))
+                            .frame(width: 48, height: 48)
+                            .background(
+                                Circle()
+                                    .stroke(Color(.darkGray), lineWidth: 1)
+                            )
+                    }
+
+                    NavigationLink {
+                        PaymentPage(product: product)
+                    } label: {
+                        Text("Buy now")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.black)
+                            .padding(.horizontal, 28)
+                            .padding(.vertical, 14)
+                            .background(
+                                Capsule()
+                                    .fill(Color(red: 0.55, green: 1.0, blue: 0.6))
+                            )
+                    }
+                    .buttonStyle(.plain)
                 }
+
             }
             .padding()
             .background(.ultraThinMaterial)

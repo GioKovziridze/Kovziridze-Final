@@ -134,12 +134,12 @@ final class NetworkManager: NetworkManagerProtocol {
         return try decoder.decode([Product].self, from: data)
     }
     
-    func fetchCategories() async throws -> [Category] {
+    func fetchCategories() async throws -> [ProductCategory] {
         guard let url = URL(string: categoryURL) else {
             throw URLError(.badURL)
         }
         let (data, _) = try await URLSession.shared.data(from: url)
-        return try JSONDecoder().decode([Category].self, from: data)
+        return try JSONDecoder().decode([ProductCategory].self, from: data)
     }
     
 }

@@ -13,7 +13,7 @@ struct Product: Identifiable, Decodable {
     let title: String
     let price: Double
     let description: String
-    let category: Category
+    let category: ProductCategory
     let rating: Rating
     var image: String {
         "product_\(id)"

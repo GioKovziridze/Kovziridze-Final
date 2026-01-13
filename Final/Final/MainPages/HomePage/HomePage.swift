@@ -24,7 +24,6 @@ struct HomePage: View {
                     .foregroundColor(.black)
                     .padding(.trailing, 200)
              
-                .padding(16)
                 categoryGrid
                 
                 Text("Featured products")
