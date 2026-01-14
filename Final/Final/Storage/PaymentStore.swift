@@ -20,17 +20,26 @@ final class PaymentStore: ObservableObject {
 
     private init() {}
 
+    // MARK: - Load
     func loadCards() {
         repository.fetchCards { [weak self] result in
             DispatchQueue.main.async {
                 if case .success(let cards) = result {
                     self?.cards = cards
-                    self?.selectedCard = cards.first
+                    if self?.selectedCard == nil {
+                        self?.selectedCard = cards.first
+                    }
                 }
             }
         }
     }
 
+    // MARK: - Select
+    func selectCard(_ card: PaymentCard) {
+        selectedCard = card
+    }
+
+    // MARK: - Add
     func addCard(
         last4: String,
         holderName: String,
@@ -54,7 +63,24 @@ final class PaymentStore: ObservableObject {
         }
     }
 
-    // MOCK PAYMENT
+    // MARK: - Delete
+    func deleteCard(_ card: PaymentCard) {
+        guard let cardId = card.id else { return }
+
+        repository.deleteCard(cardId: cardId) { [weak self] result in
+            DispatchQueue.main.async {
+                if case .success = result {
+                    self?.cards.removeAll { $0.id == cardId }
+
+                    if self?.selectedCard?.id == cardId {
+                        self?.selectedCard = self?.cards.first
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Mock Payment
     func processPayment(amount: Double, completion: @escaping () -> Void) {
         isProcessing = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -63,4 +89,3 @@ final class PaymentStore: ObservableObject {
         }
     }
 }
-

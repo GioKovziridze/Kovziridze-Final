@@ -13,6 +13,7 @@ struct PaymentPage: View {
     @ObservedObject private var paymentStore = PaymentStore.shared
 
     @State private var showAddCard = false
+    @State private var showSavedCards = false
     @State private var showSuccess = false
 
     var body: some View {
@@ -33,11 +34,14 @@ struct PaymentPage: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                // MARK: - Card Section
-                if let card = paymentStore.selectedCard {
-                    cardView(card)
+                // MARK: - Payment Card Section
+                if let selectedCard = paymentStore.selectedCard {
+                    cardView(selectedCard)
+
+                    addCardButton
                 } else {
                     addCardPrompt
+                    showCardsButton
                 }
 
                 Spacer()
@@ -48,17 +52,23 @@ struct PaymentPage: View {
                 } label: {
                     if paymentStore.isProcessing {
                         ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.green)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                     } else {
                         Text("Pay now")
                             .font(.system(size: 16, weight: .semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(paymentStore.selectedCard == nil ? Color.gray : Color.green)
+                            .foregroundColor(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(paymentStore.selectedCard == nil ? Color.gray : Color.green)
-                .foregroundColor(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
                 .disabled(paymentStore.selectedCard == nil || paymentStore.isProcessing)
+
             }
             .padding()
             .navigationTitle("Payment")
@@ -68,14 +78,14 @@ struct PaymentPage: View {
             .navigationDestination(isPresented: $showAddCard) {
                 AddCardPage()
             }
-            .onAppear {
-                paymentStore.loadCards()
+            .navigationDestination(isPresented: $showSavedCards) {
+                SavedCardsPage()
             }
         }
     }
 
-    // MARK: - Card View
-    private func cardView(_ card: PaymentCard) -> some View {
+    // MARK: - Card Row
+    func cardView(_ card: PaymentCard) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text("\(card.brand) •••• \(card.last4)")
@@ -89,7 +99,7 @@ struct PaymentPage: View {
             Spacer()
 
             Button("Change") {
-                showAddCard = true
+                showSavedCards = true
             }
             .foregroundColor(.blue)
         }
@@ -98,24 +108,62 @@ struct PaymentPage: View {
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
-    // MARK: - Add Card Prompt
-    private var addCardPrompt: some View {
+    // MARK: - Add Card Prompt (full-width button)
+    var addCardPrompt: some View {
         Button {
             showAddCard = true
         } label: {
             HStack {
-                Image(systemName: "creditcard")
-                Text("Add payment card")
+                Image(systemName: "plus.circle")
+                Text("Add Payment Card")
+                    .fontWeight(.medium)
             }
+            .foregroundColor(.blue)
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color(.systemGray6))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(Color.blue, lineWidth: 1.5)
+            )
         }
     }
 
-    // MARK: - Payment Logic
-    private func pay() {
+    // MARK: - Add Card button
+    var addCardButton: some View {
+        Button {
+            showAddCard = true
+        } label: {
+            HStack {
+                Image(systemName: "plus.circle.fill")
+                    .foregroundColor(.green)
+                Text("Add another card")
+                    .foregroundColor(.green)
+                    .fontWeight(.semibold)
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color.green.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+        }
+    }
+    //MARK: - Show cards button
+    var showCardsButton: some View {
+        Button {
+            showSavedCards = true
+        } label: {
+            Text("Show My Cards")
+                .font(.system(size: 16, weight: .semibold))
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.gray.opacity(0.2))
+                .foregroundColor(.blue)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+        }
+    }
+
+
+    // MARK: - Pay Logic
+    func pay() {
         paymentStore.processPayment(amount: product.price) {
             showSuccess = true
         }

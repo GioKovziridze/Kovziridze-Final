@@ -7,6 +7,20 @@
 import SwiftUI
 import Combine
 
+enum CardBrand: String, CaseIterable {
+    case mastercard = "MasterCard"
+    case visa = "Visa"
+    case amex = "Amex"
+    
+    var imageName: String {
+        switch self {
+        case .mastercard: return "mastercard"
+        case .visa: return "visa"
+        case .amex: return "amex"
+        }
+    }
+}
+
 final class AddCardViewModel: ObservableObject {
 
     // MARK: - Properties
@@ -15,6 +29,7 @@ final class AddCardViewModel: ObservableObject {
     @Published var cvc = ""
     @Published var cardHolder = ""
     @Published var flipDegree = 0.0
+    @Published var cardBrand: CardBrand = .mastercard
     @Published var errorMessage: String?
 
     private let paymentStore = PaymentStore.shared
@@ -29,14 +44,13 @@ final class AddCardViewModel: ObservableObject {
 
         let last4 = String(cardNumber.suffix(4))
         let (month, year) = parseExpiry(expiryDate)
-        let brand = detectBrand(from: cardNumber)
-
+    
         paymentStore.addCard(
             last4: last4,
             holderName: cardHolder,
             expMonth: month,
             expYear: year,
-            brand: brand
+            brand: cardBrand.rawValue
         )
         clearSensitiveFields()
 
@@ -96,20 +110,30 @@ final class AddCardViewModel: ObservableObject {
         let year = 2000 + (Int(components.last ?? "") ?? 0)
         return (month, year)
     }
-
-    private func detectBrand(from number: String) -> String {
-        switch number.first {
-        case "4": return "Visa"
-        case "5": return "MasterCard"
-        case "3": return "American Express"
-        case "6": return "Discover"
-        default: return "Unknown"
+    
+    private func detectCardBrand() {
+        guard let firstDigit = cardNumber.first else {
+            cardBrand = .mastercard
+            return
+        }
+        
+        switch firstDigit {
+        case "4":
+            cardBrand = .visa
+        case "5":
+            cardBrand = .mastercard
+        case "3":
+            cardBrand = .amex
+        default:
+            cardBrand = .mastercard
         }
     }
-
+    
     private func clearSensitiveFields() {
         cardNumber = ""
         cvc = ""
         expiryDate = ""
     }
+    
+    
 }
