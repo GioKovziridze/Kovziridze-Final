@@ -19,6 +19,7 @@ struct PaymentPage: View {
         NavigationStack {
             VStack(spacing: 24) {
 
+                // MARK: - Order Summary
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Order Summary")
                         .font(.headline)
@@ -32,7 +33,8 @@ struct PaymentPage: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                if let card = paymentStore.savedCard {
+                // MARK: - Card Section
+                if let card = paymentStore.selectedCard {
                     cardView(card)
                 } else {
                     addCardPrompt
@@ -40,6 +42,7 @@ struct PaymentPage: View {
 
                 Spacer()
 
+                // MARK: - Pay Button
                 Button {
                     pay()
                 } label: {
@@ -52,10 +55,10 @@ struct PaymentPage: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(paymentStore.savedCard == nil ? Color.gray : Color.green)
+                .background(paymentStore.selectedCard == nil ? Color.gray : Color.green)
                 .foregroundColor(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                .disabled(paymentStore.savedCard == nil || paymentStore.isProcessing)
+                .disabled(paymentStore.selectedCard == nil || paymentStore.isProcessing)
             }
             .padding()
             .navigationTitle("Payment")
@@ -65,15 +68,23 @@ struct PaymentPage: View {
             .navigationDestination(isPresented: $showAddCard) {
                 AddCardPage()
             }
+            .onAppear {
+                paymentStore.loadCards()
+            }
         }
     }
 
-    // MARK: - Views
-
-    func cardView(_ card: PaymentCard) -> some View {
+    // MARK: - Card View
+    private func cardView(_ card: PaymentCard) -> some View {
         HStack {
-            Text("\(card.brand) •••• \(card.last4)")
-                .font(.system(size: 16, weight: .medium))
+            VStack(alignment: .leading, spacing: 4) {
+                Text("\(card.brand) •••• \(card.last4)")
+                    .font(.system(size: 16, weight: .medium))
+
+                Text("Expires \(card.expMonth)/\(card.expYear)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
 
             Spacer()
 
@@ -87,7 +98,8 @@ struct PaymentPage: View {
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
-    var addCardPrompt: some View {
+    // MARK: - Add Card Prompt
+    private var addCardPrompt: some View {
         Button {
             showAddCard = true
         } label: {
@@ -102,13 +114,10 @@ struct PaymentPage: View {
         }
     }
 
-    // MARK: - Logic
-
-    func pay() {
-        paymentStore.processPayment(amount: product.price) { result in
-            if case .success = result {
-                showSuccess = true
-            }
+    // MARK: - Payment Logic
+    private func pay() {
+        paymentStore.processPayment(amount: product.price) {
+            showSuccess = true
         }
     }
 }
