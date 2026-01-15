@@ -101,7 +101,7 @@ struct HomePage: View {
             Spacer()
             
             Button {
-                // profile action
+                TabBarController.shared?.switchToProfileTab()
             } label: {
                 Image(systemName: "person.fill")
                     .foregroundColor(.black)

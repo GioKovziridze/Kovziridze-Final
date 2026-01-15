@@ -8,13 +8,16 @@ import Foundation
 import FirebaseFirestore
 
 struct UserModel: Identifiable, Codable {
-    
     @DocumentID var id: String?
     var username: String
     var email: String
     var city: String
     var cart: [CartItem] = []
     var favorites: [String] = []
+    
+    var displayCity: String {
+        city.isEmpty ? "Tbilisi" : city
+    }
 }
 
 struct CartItem: Codable, Identifiable, Equatable {
@@ -26,5 +29,13 @@ struct CartDisplayItem: Identifiable {
     let id: String          // productID
     let product: Product
     var quantity: Int
+}
+
+extension CartDisplayItem {
+    init(product: Product, quantity: Int = 1) {
+        self.id = String(product.id)
+        self.product = product
+        self.quantity = quantity
+    }
 }
 

@@ -113,7 +113,7 @@ struct ProductDetailsPage: View {
                     }
 
                     NavigationLink {
-                        PaymentPage(product: product)
+                        CheckoutContainer(cartItems: [CartDisplayItem(product: product)])
                     } label: {
                         Text("Buy now")
                             .font(.system(size: 16, weight: .semibold))

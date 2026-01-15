@@ -81,6 +81,9 @@ struct ProfilePage: View {
         }
     }
 }
+
+//TODO: - Move these extensions
+
 private extension ProfilePage {
 
     var profileHeader: some View {

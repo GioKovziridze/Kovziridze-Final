@@ -8,36 +8,62 @@
 import SwiftUI
 
 struct PaymentPage: View {
-
-    let product: Product
+    let products: [CartDisplayItem]
     @ObservedObject private var paymentStore = PaymentStore.shared
 
     @State private var showAddCard = false
     @State private var showSavedCards = false
     @State private var showSuccess = false
+    @State private var isPaymentSuccessful = false
+    
+    var nextAction: () -> Void
+    private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
+
+    var totalAmount: Double {
+        products.reduce(0) { $0 + ($1.product.price * Double($1.quantity)) }
+    }
 
     var body: some View {
-        NavigationStack {
+        ZStack {
             VStack(spacing: 24) {
 
                 // MARK: - Order Summary
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 12) {
                     Text("Order Summary")
                         .font(.headline)
 
-                    Text(product.title)
-                        .font(.subheadline)
+                    ForEach(products) { item in
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(item.product.title)
+                                    .font(.subheadline)
+                                    .lineLimit(2)
+                                Text("Quantity: \(item.quantity)")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            Text("$\(item.product.price * Double(item.quantity), specifier: "%.2f")")
+                                .fontWeight(.semibold)
+                        }
+                    }
 
-                    Text("$\(product.price, specifier: "%.2f")")
-                        .font(.title2)
-                        .fontWeight(.bold)
+                    Divider()
+
+                    HStack {
+                        Text("Total")
+                            .font(.headline)
+                        Spacer()
+                        Text("$\(totalAmount, specifier: "%.2f")")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 // MARK: - Payment Card Section
                 if let selectedCard = paymentStore.selectedCard {
                     cardView(selectedCard)
-
                     addCardButton
                 } else {
                     addCardPrompt
@@ -49,38 +75,47 @@ struct PaymentPage: View {
                 // MARK: - Pay Button
                 Button {
                     pay()
+                   
                 } label: {
                     if paymentStore.isProcessing {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle(tint: .white))
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.green)
+                            .background(accentGreen)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                     } else {
                         Text("Pay now")
                             .font(.system(size: 16, weight: .semibold))
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(paymentStore.selectedCard == nil ? Color.gray : Color.green)
+                            .background(paymentStore.selectedCard == nil ? Color.gray : accentGreen)
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
                 }
                 .disabled(paymentStore.selectedCard == nil || paymentStore.isProcessing)
+                
 
             }
             .padding()
             .navigationTitle("Payment")
-            .navigationDestination(isPresented: $showSuccess) {
-                PaymentSuccessPage()
+            
+            if isPaymentSuccessful {
+                Color.black.opacity(0.35)
+                    .ignoresSafeArea()
+                
+                PaymentSuccessPage(nextAction: nextAction)
+                    .transition(.scale.combined(with: .opacity))
             }
-            .navigationDestination(isPresented: $showAddCard) {
-                AddCardPage()
-            }
-            .navigationDestination(isPresented: $showSavedCards) {
-                SavedCardsPage()
-            }
+            
+        }
+        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: isPaymentSuccessful)
+        .navigationDestination(isPresented: $showAddCard) {
+            AddCardPage()
+        }
+        .navigationDestination(isPresented: $showSavedCards) {
+            SavedCardsPage()
         }
     }
 
@@ -90,7 +125,6 @@ struct PaymentPage: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("\(card.brand) •••• \(card.last4)")
                     .font(.system(size: 16, weight: .medium))
-
                 Text("Expires \(card.expMonth)/\(card.expYear)")
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -135,18 +169,19 @@ struct PaymentPage: View {
         } label: {
             HStack {
                 Image(systemName: "plus.circle.fill")
-                    .foregroundColor(.green)
+                    .foregroundColor(accentGreen)
                 Text("Add another card")
-                    .foregroundColor(.green)
+                    .foregroundColor(accentGreen)
                     .fontWeight(.semibold)
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color.green.opacity(0.1))
+            .background(accentGreen.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
-    //MARK: - Show cards button
+
+    // MARK: - Show cards button
     var showCardsButton: some View {
         Button {
             showSavedCards = true
@@ -161,11 +196,10 @@ struct PaymentPage: View {
         }
     }
 
-
     // MARK: - Pay Logic
     func pay() {
-        paymentStore.processPayment(amount: product.price) {
-            showSuccess = true
+        paymentStore.processPayment(amount: totalAmount) {
+            isPaymentSuccessful = true
         }
     }
 }

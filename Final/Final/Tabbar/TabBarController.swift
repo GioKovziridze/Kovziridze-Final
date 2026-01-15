@@ -10,13 +10,16 @@ import UIKit
 import SwiftUI
 
 final class TabBarController: UITabBarController {
-
+    
+    static var shared: TabBarController?
+    
     private let customTabBarHeight: CGFloat = 70
     private let floatingMargin: CGFloat = 22
     private var backgroundView: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        TabBarController.shared = self
         setupTabs()
         setupCustomTabBarAppearance()
     }
@@ -26,13 +29,13 @@ final class TabBarController: UITabBarController {
         homeVC.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house.fill"), tag: 0)
         
         let exploreVC = UIHostingController(rootView: ExplorePage())
-        exploreVC.tabBarItem = UITabBarItem(title: "Explore", image: UIImage(systemName: "magnifyingglass"), tag: 2)
+        exploreVC.tabBarItem = UITabBarItem(title: "Explore", image: UIImage(systemName: "magnifyingglass"), tag: 1)
         
         let cartVC = UIHostingController(rootView: CartPage())
-        cartVC.tabBarItem = UITabBarItem(title: "Cart", image: UIImage(systemName: "cart.fill"), tag: 3)
+        cartVC.tabBarItem = UITabBarItem(title: "Cart", image: UIImage(systemName: "cart.fill"), tag: 2)
         
         let profileVC = UIHostingController(rootView: ProfilePage())
-        profileVC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 4)
+        profileVC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 3)
         
         viewControllers = [
             UINavigationController(rootViewController: homeVC),
@@ -41,7 +44,11 @@ final class TabBarController: UITabBarController {
             UINavigationController(rootViewController: profileVC)
         ]
     }
-
+    
+    func switchToProfileTab() {
+        self.selectedIndex = 3
+    }
+    
     private func setupCustomTabBarAppearance() {
         tabBar.backgroundImage = UIImage()
         tabBar.shadowImage = UIImage()

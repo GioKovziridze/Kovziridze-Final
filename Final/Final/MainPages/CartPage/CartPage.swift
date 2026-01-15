@@ -50,7 +50,7 @@ struct CartPage: View {
         viewModel.buildCart(user: user, products: productStore.products)
     }
 }
-
+//TODO: - move these extensions
 private extension CartPage {
 
     func cartItemRow(_ item: CartDisplayItem) -> some View {
@@ -146,6 +146,7 @@ private extension CartPage {
     }
 }
 
+
 private extension CartPage {
 
     var checkoutSection: some View {
@@ -161,8 +162,8 @@ private extension CartPage {
                     .foregroundColor(accentGreen)
             }
 
-            Button {
-                print("Proceed to payment (mock)")
+            NavigationLink{
+                CheckoutContainer(cartItems: viewModel.items)
             } label: {
                 Text("Buy Now")
                     .fontWeight(.semibold)
