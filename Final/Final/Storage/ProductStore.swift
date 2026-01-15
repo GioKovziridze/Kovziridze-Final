@@ -13,6 +13,7 @@ final class ProductStore: ObservableObject {
     @Published var categories: [ProductCategory] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var cartProducts: [Product] = []
     
     static let shared = ProductStore()
     

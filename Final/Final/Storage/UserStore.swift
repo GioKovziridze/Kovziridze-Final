@@ -71,17 +71,20 @@ final class UserStore: ObservableObject {
     
     func updateCart(item: CartItem) {
         guard let uid = currentUser?.id else { return }
+
         var updatedCart = currentUser?.cart ?? []
         if let index = updatedCart.firstIndex(where: { $0.id == item.id }) {
-            updatedCart[index] = item
+            updatedCart[index].quantity = item.quantity
         } else {
             updatedCart.append(item)
         }
         
+        currentUser?.cart = updatedCart
+
         let cartDicts = updatedCart.map { ["id": $0.id, "quantity": $0.quantity] }
-        
         Firestore.firestore().collection("users").document(uid).updateData([
             "cart": cartDicts
         ])
     }
+
 }

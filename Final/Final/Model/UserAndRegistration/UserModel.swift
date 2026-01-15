@@ -8,6 +8,7 @@ import Foundation
 import FirebaseFirestore
 
 struct UserModel: Identifiable, Codable {
+    
     @DocumentID var id: String?
     var username: String
     var email: String
@@ -16,16 +17,14 @@ struct UserModel: Identifiable, Codable {
     var favorites: [String] = []
 }
 
-struct CartItem: Codable, Identifiable {
+struct CartItem: Codable, Identifiable, Equatable {
     var id: String // productID
     var quantity: Int
 }
 
-struct ProductModel: Identifiable, Codable {
-    @DocumentID var id: String?
-    var name: String
-    var price: Double
-    var imageURL: String
-    var category: String
+struct CartDisplayItem: Identifiable {
+    let id: String          // productID
+    let product: Product
+    var quantity: Int
 }
 

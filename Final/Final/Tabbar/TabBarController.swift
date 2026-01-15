@@ -26,22 +26,19 @@ final class TabBarController: UITabBarController {
         homeVC.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house.fill"), tag: 0)
         
         let exploreVC = UIHostingController(rootView: ExplorePage())
-        exploreVC.tabBarItem = UITabBarItem(title: "Explore", image: UIImage(systemName: "magnifyingglass"), tag: 3)
+        exploreVC.tabBarItem = UITabBarItem(title: "Explore", image: UIImage(systemName: "magnifyingglass"), tag: 2)
         
-        let profileVC = UIViewController()
-        profileVC.view.backgroundColor = .systemBackground
-        profileVC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 1)
+        let cartVC = UIHostingController(rootView: CartPage())
+        cartVC.tabBarItem = UITabBarItem(title: "Cart", image: UIImage(systemName: "cart.fill"), tag: 3)
         
-        let cartVC = UIViewController()
-        cartVC.view.backgroundColor = .systemBackground
-        cartVC.tabBarItem = UITabBarItem(title: "Cart", image: UIImage(systemName: "cart.fill"), tag: 2)
-        
+        let profileVC = UIHostingController(rootView: ProfilePage())
+        profileVC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 4)
         
         viewControllers = [
             UINavigationController(rootViewController: homeVC),
             UINavigationController(rootViewController: exploreVC),
-            UINavigationController(rootViewController: profileVC),
             UINavigationController(rootViewController: cartVC),
+            UINavigationController(rootViewController: profileVC)
         ]
     }
 

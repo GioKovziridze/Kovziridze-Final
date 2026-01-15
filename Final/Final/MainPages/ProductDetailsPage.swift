@@ -10,7 +10,8 @@ import SwiftUI
 
 struct ProductDetailsPage: View {
     let product: Product
-
+    let productStore = ProductStore.shared
+    
     var body: some View {
         ZStack {
             ScrollView {
@@ -99,7 +100,7 @@ struct ProductDetailsPage: View {
 
                 HStack(spacing: 12) {
                     Button {
-                        // add to cart logicr
+                        addToCart(product)
                     } label: {
                         Image(systemName: "cart.fill")
                             .font(.system(size: 18, weight: .semibold))
@@ -131,5 +132,18 @@ struct ProductDetailsPage: View {
             .padding()
             .background(.ultraThinMaterial)
         }
+    }
+}
+extension ProductDetailsPage {
+    
+    func addToCart(_ product: Product) {
+        let userStore = UserStore.shared
+
+        let cartItem = CartItem(
+            id: String(product.id),
+            quantity: 1
+        )
+
+        userStore.updateCart(item: cartItem)
     }
 }
