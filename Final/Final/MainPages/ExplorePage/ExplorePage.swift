@@ -44,7 +44,6 @@ struct ExplorePage: View {
         .navigationTitle("Explore")
     }
     
-    
     var categoryChips: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
@@ -75,8 +74,6 @@ struct ExplorePage: View {
         }
     }
     
-    //TODO: - Add category filters
-    
     var filteredProducts: [Product] {
         store.products.filter { product in
 
@@ -97,60 +94,6 @@ struct ExplorePage: View {
 
 
 }
-//TODO: - move this to a separate file
-
-struct SearchBar: View {
-    @Binding var text: String
-    
-    var body: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "magnifyingglass")
-                .foregroundColor(.black)
-            
-            TextField("Search products", text: $text)
-                .foregroundColor(.black)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
-        .background(
-            Capsule()
-                .fill(Color(red: 0.55, green: 1.0, blue: 0.6))
-        )
-    }
-}
-//TODO: - this too
-struct ProductRowView: View {
-    let product: Product
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(product.image)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 60, height: 60)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(product.title)
-                    .font(.system(size: 15, weight: .semibold))
-                    .lineLimit(2)
-
-                Text("$\(product.price, specifier: "%.2f")")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(.gray)
-            }
-
-            Spacer()
-        }
-        .padding(12)
-        .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.05), radius: 6, x: 0, y: 3)
-    }
-}
-
 
 #Preview{
     ExplorePage()

@@ -55,21 +55,13 @@ struct AddressStep: View {
     
     // MARK: - Save Address
     private func saveAddress() {
-        // If user typed manually but didn't tap map
         if selectedAddress == nil {
-            // Use default Tbilisi coordinates
-            let defaultCoordinate = CLLocationCoordinate2D(latitude: 41.7151, longitude: 44.8271)
+            let defaultCoordinate = CLLocationCoordinate2D(latitude: 41.7151, longitude: 44.8271) //Tbilisi
             selectedAddress = Address(coordinate: defaultCoordinate, addressLine: addressText)
         } else if !addressText.isEmpty {
-            // Update the addressLine from text
             selectedAddress?.addressLine = addressText
         }
     }
 }
 
-// MARK: - Address Model
-struct Address: Identifiable {
-    let id = UUID()
-    var coordinate: CLLocationCoordinate2D
-    var addressLine: String
-}
+

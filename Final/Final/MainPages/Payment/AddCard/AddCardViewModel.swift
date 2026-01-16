@@ -67,6 +67,7 @@ final class AddCardViewModel: ObservableObject {
     func processCardNumber(_ input: String) {
         let filtered = input.filter(\.isNumber)
         cardNumber = String(filtered.prefix(16))
+        detectCardBrand()
     }
 
     func processCVC(_ input: String) {

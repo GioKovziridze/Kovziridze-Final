@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct OrderTrackingPage: View {
-    // You could pass order info here later
     @State private var currentStep: TrackingStep = .confirmed
     
     private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
@@ -73,7 +72,6 @@ struct OrderTrackingPage: View {
                 }
             }
             
-            // Step description
             VStack(alignment: .leading, spacing: 4) {
                 Text(step.title)
                     .font(.headline)

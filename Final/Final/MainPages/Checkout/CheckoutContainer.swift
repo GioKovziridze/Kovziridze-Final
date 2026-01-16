@@ -18,12 +18,10 @@ struct CheckoutContainer: View {
     var body: some View {
         NavigationStack {
             VStack {
-                // Progress Indicator
                 stepIndicator
                 
                 Divider().padding(.vertical, 8)
-                
-                // Step Content
+    
                 Group {
                     switch currentStep {
                     case .address:

@@ -11,12 +11,18 @@ import SwiftUI
 struct ProductDetailsPage: View {
     let product: Product
     let productStore = ProductStore.shared
-    
+
+    // MARK: - Animation State
+    @State private var showFlyingDot = false
+    @State private var cartPulse = false
+    @State private var showCartBadge = false
+
     var body: some View {
         ZStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
 
+                    // MARK: - Product Image (STATIC)
                     Image(product.image)
                         .resizable()
                         .scaledToFit()
@@ -69,13 +75,17 @@ struct ProductDetailsPage: View {
                     }
                     .padding(.horizontal)
 
-                    Spacer(minLength: 100)
+                    Spacer(minLength: 120)
                 }
                 .padding(.top)
             }
             .scrollIndicators(.hidden)
 
+            // MARK: - Bottom Bar
             addToCartBar
+
+            // MARK: - Flying Dot Overlay
+            flyingDot
         }
         .navigationTitle("Details")
         .navigationBarTitleDisplayMode(.inline)
@@ -99,21 +109,44 @@ struct ProductDetailsPage: View {
                 Spacer()
 
                 HStack(spacing: 12) {
-                    Button {
-                        addToCart(product)
-                    } label: {
-                        Image(systemName: "cart.fill")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(Color(.darkGray))
-                            .frame(width: 48, height: 48)
-                            .background(
-                                Circle()
-                                    .stroke(Color(.darkGray), lineWidth: 1)
-                            )
+
+                    // MARK: - Cart Button
+                    ZStack(alignment: .topTrailing) {
+
+                        Button {
+                            triggerAddToCartAnimation()
+                            addToCart(product)
+                        } label: {
+                            Image(systemName: "cart.fill")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(.gray)
+                                .frame(width: 48, height: 48)
+                                .background(
+                                    Circle()
+                                        .stroke(Color(.darkGray), lineWidth: 1)
+                                        .background(
+                                            Circle()
+                                                .fill(cartPulse ? Color.green.opacity(0.25) : Color.clear)
+                                        )
+                                        .scaleEffect(cartPulse ? 1.15 : 1)
+                                )
+                        }
+
+                        // MARK: - Badge
+                        if showCartBadge {
+                            Circle()
+                                .fill(Color.green)
+                                .frame(width: 10, height: 10)
+                                .offset(x: 4, y: -4)
+                                .transition(.scale)
+                        }
                     }
 
+                    // MARK: - Buy Now
                     NavigationLink {
-                        CheckoutContainer(cartItems: [CartDisplayItem(product: product)])
+                        CheckoutContainer(
+                            cartItems: [CartDisplayItem(product: product)]
+                        )
                     } label: {
                         Text("Buy now")
                             .font(.system(size: 16, weight: .semibold))
@@ -127,15 +160,53 @@ struct ProductDetailsPage: View {
                     }
                     .buttonStyle(.plain)
                 }
-
             }
             .padding()
             .background(.ultraThinMaterial)
         }
     }
+
+    // MARK: - Flying Dot
+    private var flyingDot: some View {
+        GeometryReader { geo in
+            if showFlyingDot {
+                Circle()
+                    .fill(Color.green)
+                    .frame(width: 14, height: 14)
+                    .position(
+                        x: geo.size.width * 0.5,
+                        y: geo.size.height * 0.38
+                    )
+                    .offset(x: 57, y: 400)
+                    .transition(.scale)
+//                    .animation(
+//                        .interpolatingSpring(stiffness: 100, damping: 14),
+//                        value: showFlyingDot
+//                    )
+            }
+        }
+        .ignoresSafeArea()
+    }
+
+    // MARK: - Animation Trigger
+    private func triggerAddToCartAnimation() {
+        withAnimation {
+            showFlyingDot = true
+            cartPulse = true
+            showCartBadge = true
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+            withAnimation {
+                showFlyingDot = false
+                cartPulse = false
+            }
+        }
+    }
 }
+
+// MARK: - Cart Logic
 extension ProductDetailsPage {
-    
     func addToCart(_ product: Product) {
         let userStore = UserStore.shared
 

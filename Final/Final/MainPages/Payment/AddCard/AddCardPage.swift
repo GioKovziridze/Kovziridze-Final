@@ -27,7 +27,7 @@ struct AddCardPage: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 20)
                     .fill(Color.clear)
-                    .frame(height: 250)
+                    .frame(height: 230)
                     .overlay(
                         ZStack {
                             frontCard
@@ -128,24 +128,29 @@ struct AddCardPage: View {
                     endPoint: .bottomTrailing
                 )
             )
-            .frame(height: 235)
+            .frame(height: 220)
             .shadow(radius: 5)
             .overlay(
                 VStack(alignment: .leading, spacing: 14) {
 
-                    Text("MasterCard")
+                    Text(viewModel.cardBrand.rawValue)
                         .font(.caption)
                         .foregroundColor(.white)
                         .fontWeight(.bold)
 
-                    Image(.cardChip)
-                        .resizable()
-                        .frame(width: 40, height: 40)
-
-                    Text(viewModel.formattedCardDisplay)
-                        .font(.title2)
-                        .foregroundColor(.white)
-                        .fontWeight(.semibold)
+                    HStack{
+                        Text(viewModel.formattedCardDisplay)
+                            .font(.title2)
+                            .foregroundColor(.white)
+                            .fontWeight(.semibold)
+                        
+                        Spacer()
+                        
+                        Image(viewModel.cardBrand.imageName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 70, height: 60)
+                    }
 
                     HStack {
                         VStack(alignment: .leading) {
@@ -158,15 +163,6 @@ struct AddCardPage: View {
                         }
 
                         Spacer()
-
-                        VStack(alignment: .leading) {
-                            Text("CVC")
-                                .font(.caption)
-                                .foregroundColor(.white.opacity(0.7))
-                            Text(viewModel.cvc.isEmpty ? "•••" : viewModel.cvc)
-                                .foregroundColor(.white)
-                                .fontWeight(.semibold)
-                        }
                     }
 
                     Spacer()
@@ -179,10 +175,9 @@ struct AddCardPage: View {
 
                         Spacer()
 
-                        Image(.mastercard)
+                        Image(.cardChip)
                             .resizable()
-                            .scaledToFit()
-                            .frame(width: 50, height: 40)
+                            .frame(width: 40, height: 40)
                     }
                 }
                 .padding()
@@ -199,7 +194,7 @@ struct AddCardPage: View {
                     endPoint: .bottomTrailing
                 )
             )
-            .frame(height: 235)
+            .frame(height: 220)
             .shadow(radius: 5)
             .overlay(
                 VStack {
