@@ -172,8 +172,6 @@ private extension ProfilePage {
     }
 }
 //TODO: - gaitane mere da gaaswore
-struct OrdersPage: View { var body: some View { Text("Orders") } }
-struct WishlistPage: View { var body: some View { Text("Wishlist") } }
 struct PaymentMethodsPage: View { var body: some View { Text("Payments") } }
 struct AddressesPage: View { var body: some View { Text("Addresses") } }
 struct SettingsPage: View { var body: some View { Text("Settings") } }

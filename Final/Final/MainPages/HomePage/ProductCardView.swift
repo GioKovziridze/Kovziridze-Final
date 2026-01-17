@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProductCardView: View {
     let product: Product
+    @ObservedObject private var userStore = UserStore.shared
     @State private var isFavorite = false
 
     var body: some View {
@@ -23,9 +24,9 @@ struct ProductCardView: View {
                     .clipped()
 
                 Button {
-                    isFavorite.toggle()
+                    userStore.toggleFavorite(productID: product.id)
                 } label: {
-                    Image(systemName: isFavorite ? "heart.fill" : "heart")
+                    Image(systemName: userStore.isFavorite(productID: product.id) ? "heart.fill" : "heart")
                         .foregroundColor(isFavorite ? .red : .gray)
                         .padding(8)
                         .background(Color.white.opacity(0.9))

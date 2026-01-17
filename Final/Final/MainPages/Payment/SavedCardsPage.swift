@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct SavedCardsPage: View {
-
     @ObservedObject private var paymentStore = PaymentStore.shared
     @Environment(\.dismiss) private var dismiss
 

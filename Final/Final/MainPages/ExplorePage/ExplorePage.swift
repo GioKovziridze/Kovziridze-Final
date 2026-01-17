@@ -20,26 +20,28 @@ struct ExplorePage: View {
         ]
     
     var body: some View {
-        VStack(spacing: 16) {
-            
-            SearchBar(text: $searchText)
-                .padding(.horizontal)
-            categoryChips
-            
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(filteredProducts) { product in
-                        NavigationLink {
-                            ProductDetailsPage(product: product)
-                        } label: {
-                            ProductCardView(product: product)
+        NavigationStack {
+            VStack(spacing: 16) {
+                
+                SearchBar(text: $searchText)
+                    .padding(.horizontal)
+                categoryChips
+                
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 20) {
+                        ForEach(filteredProducts) { product in
+                            NavigationLink {
+                                ProductDetailsPage(product: product)
+                            } label: {
+                                ProductCardView(product: product)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
+                
             }
-
         }
         .navigationTitle("Explore")
     }

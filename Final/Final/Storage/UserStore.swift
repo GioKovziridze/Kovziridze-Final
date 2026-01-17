@@ -88,3 +88,90 @@ final class UserStore: ObservableObject {
     }
 
 }
+extension UserStore {
+    func toggleFavorite(productID: Int) {
+        guard let uid = currentUser?.id else { return }
+
+        var updatedFavorites = currentUser?.favorites ?? []
+
+        if let index = updatedFavorites.firstIndex(of: "\(productID)") {
+            updatedFavorites.remove(at: index)
+        } else {
+            updatedFavorites.append("\(productID)")
+        }
+        currentUser?.favorites = updatedFavorites
+
+        Firestore.firestore().collection("users").document(uid)
+            .updateData(["favorites": updatedFavorites]) { error in
+                if let error = error {
+                    print("Error updating favorites:", error)
+                } else {
+                    print("Favorites updated successfully")
+                }
+            }
+    }
+
+    func isFavorite(productID: Int) -> Bool {
+        currentUser?.favorites.contains("\(productID)") ?? false
+    }
+}
+//MARK: - saving order logic
+extension UserStore {
+
+    func saveOrder(items: [CartDisplayItem], address: Address, totalAmount: Double, completion: ((Bool) -> Void)? = nil) {
+        guard let uid = currentUser?.id else { return }
+
+        let db = Firestore.firestore()
+        let orderID = UUID().uuidString
+        let order = Order(id: orderID, items: items, address: address, totalAmount: totalAmount)
+
+        // Save in "users/{uid}/orders/{orderID}"
+        do {
+            try db.collection("users")
+                .document(uid)
+                .collection("orders")
+                .document(orderID)
+                .setData(from: order) { error in
+                    if let error = error {
+                        print("Failed to save order:", error)
+                        completion?(false)
+                    } else {
+                        print("Order saved successfully")
+                        self.currentUser?.orders.append(order)
+                        completion?(true)
+                    }
+                }
+        } catch {
+            print("Failed to encode order:", error)
+            completion?(false)
+        }
+    }
+
+    func fetchOrders(completion: @escaping ([Order]) -> Void) {
+        guard let uid = currentUser?.id else { return }
+        let db = Firestore.firestore()
+
+        db.collection("users")
+            .document(uid)
+            .collection("orders")
+            .order(by: "date", descending: true)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("Failed to fetch orders:", error)
+                    completion([])
+                    return
+                }
+
+                guard let documents = snapshot?.documents else {
+                    completion([])
+                    return
+                }
+
+                let orders: [Order] = documents.compactMap { doc in
+                    try? doc.data(as: Order.self)
+                }
+                completion(orders)
+            }
+    }
+}
+

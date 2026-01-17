@@ -14,51 +14,50 @@ struct HomePage: View {
 
     //TODO: - remove this later
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                header
-                promoBanner
-                
-                Text("Category")
-                    .font(.headline)
-                    .foregroundColor(.black)
-                    .padding(.trailing, 200)
-             
-                categoryGrid
-                
-                Text("Featured products")
-                    .font(.headline)
-                    .foregroundColor(.black)
-                    .padding(.trailing, 200)
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 16) {
-                        ForEach(store.products.prefix(5)) { product in
-                            NavigationLink {
-                                ProductDetailsPage(product: product)
-                            } label: {
-                                ProductCardView(product: product)
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    header
+                    promoBanner
+                    
+                    Text("Category")
+                        .font(.headline)
+                        .foregroundColor(.black)
+                        .padding(.trailing, 200)
+                    
+                    categoryGrid
+                    
+                    Text("Featured products")
+                        .font(.headline)
+                        .foregroundColor(.black)
+                        .padding(.trailing, 200)
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 16) {
+                            ForEach(store.products.prefix(5)) { product in
+                                NavigationLink {
+                                    ProductDetailsPage(product: product)
+                                } label: {
+                                    ProductCardView(product: product)
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
                         }
+                        .padding(.horizontal)
+                        .padding(.bottom, 10)
                     }
-                    .padding(.horizontal)
-                    .padding(.bottom, 10)
                 }
-
-                
-                
-                
-                
+                .task {
+                    await store.loadInitialDataIfNeeded()
+                    print("---------------")
+                    print(store.categories.count)
+                }
             }
-            .task {
-                await store.loadProducts()
-                await store.loadCategories()
-                print("---------------")
-                print(store.categories.count)
-            }
+            .scrollIndicators(.hidden)
         }
-        .scrollIndicators(.hidden)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .toolbar(.hidden, for: .navigationBar)
     }
     
     

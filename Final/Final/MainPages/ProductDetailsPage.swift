@@ -18,10 +18,11 @@ struct ProductDetailsPage: View {
     @State private var showCartBadge = false
 
     var body: some View {
+        
         ZStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-
+                    
                     // MARK: - Product Image (STATIC)
                     Image(product.image)
                         .resizable()
@@ -31,17 +32,17 @@ struct ProductDetailsPage: View {
                         .background(Color.gray.opacity(0.05))
                         .clipShape(RoundedRectangle(cornerRadius: 24))
                         .padding(.horizontal)
-
+                    
                     Text(product.title)
                         .font(.system(size: 22, weight: .semibold))
                         .padding(.horizontal)
-
+                    
                     HStack {
                         Text("$\(product.price, specifier: "%.2f")")
                             .font(.system(size: 24, weight: .bold))
-
+                        
                         Spacer()
-
+                        
                         HStack(spacing: 4) {
                             Image(systemName: "star.fill")
                                 .foregroundColor(.orange)
@@ -53,7 +54,7 @@ struct ProductDetailsPage: View {
                         .font(.system(size: 14))
                     }
                     .padding(.horizontal)
-
+                    
                     Text(product.category.displayName)
                         .font(.system(size: 13, weight: .medium))
                         .padding(.horizontal, 12)
@@ -63,32 +64,35 @@ struct ProductDetailsPage: View {
                                 .fill(Color(red: 0.55, green: 1.0, blue: 0.6).opacity(0.4))
                         )
                         .padding(.horizontal)
-
+                    
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Description")
                             .font(.headline)
-
+                        
                         Text(product.description)
                             .font(.system(size: 15))
                             .foregroundColor(.gray)
                             .lineSpacing(4)
                     }
                     .padding(.horizontal)
-
+                    
                     Spacer(minLength: 120)
                 }
                 .padding(.top)
             }
             .scrollIndicators(.hidden)
-
+            
             // MARK: - Bottom Bar
             addToCartBar
-
+            
             // MARK: - Flying Dot Overlay
             flyingDot
         }
+        
         .navigationTitle("Details")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.hidden, for: .navigationBar)
+        
     }
 
     // MARK: - Bottom Bar

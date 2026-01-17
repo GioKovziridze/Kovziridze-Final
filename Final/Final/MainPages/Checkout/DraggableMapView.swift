@@ -76,10 +76,13 @@ struct DraggableMapView: UIViewRepresentable {
             return view
         }
         
-        func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
+        func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView,
+                     didChange newState: MKAnnotationView.DragState,
+                     fromOldState oldState: MKAnnotationView.DragState) {
             if newState == .ending {
                 if let coordinate = view.annotation?.coordinate {
-                    parent.selectedAddress?.coordinate = coordinate
+                    parent.selectedAddress?.latitude = coordinate.latitude
+                    parent.selectedAddress?.longitude = coordinate.longitude
                 }
             }
         }

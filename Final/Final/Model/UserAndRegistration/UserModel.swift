@@ -14,6 +14,7 @@ struct UserModel: Identifiable, Codable {
     var city: String
     var cart: [CartItem] = []
     var favorites: [String] = []
+    var orders: [Order] = []
     
     var displayCity: String {
         city.isEmpty ? "Tbilisi" : city
@@ -25,7 +26,7 @@ struct CartItem: Codable, Identifiable, Equatable {
     var quantity: Int
 }
 
-struct CartDisplayItem: Identifiable {
+struct CartDisplayItem: Codable, Identifiable {
     let id: String          // productID
     let product: Product
     var quantity: Int

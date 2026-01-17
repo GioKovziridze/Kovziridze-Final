@@ -16,33 +16,44 @@ struct CheckoutContainer: View {
     private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
 
     var body: some View {
-        NavigationStack {
-            VStack {
-                stepIndicator
-                
-                Divider().padding(.vertical, 8)
-    
-                Group {
-                    switch currentStep {
-                    case .address:
-                        AddressStep(selectedAddress: $selectedAddress, nextAction: goToPayment)
-                    case .payment:
-                        PaymentPage(products: cartItems, nextAction: goToTracking)
-                    case .tracking:
-                        OrderTrackingPage()
-                    }
+        VStack {
+            stepIndicator
+            
+            Divider().padding(.vertical, 8)
+            
+            Group {
+                switch currentStep {
+                case .address:
+                    AddressStep(selectedAddress: $selectedAddress, nextAction: goToPayment)
+                case .payment:
+                    PaymentPage(
+                        products: cartItems,
+                        selectedAddress: selectedAddress,
+                        nextAction: goToTracking
+                    )
+                case .tracking:
+                    OrderTrackingPage()
                 }
-                .transition(.opacity)
-                .animation(.easeInOut, value: currentStep)
-                
-                Spacer()
             }
-            .padding()
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .tabBar)
-            .navigationBarBackButtonHidden(true)
+            .transition(.opacity)
+            .animation(.easeInOut, value: currentStep)
+            
+            Spacer()
         }
+        .padding()
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button("") {
+                    goToPreviousStep()
+                }
+            }
+        }
+
+        
     }
+    //TODO: - move these funcs
     
     // MARK: - Step Indicator
     private var stepIndicator: some View {
@@ -93,6 +104,22 @@ struct CheckoutContainer: View {
         guard selectedAddress != nil else { return }
         currentStep = .tracking
     }
+    
+    private func goToPreviousStep() {
+        withAnimation {
+            switch currentStep {
+            case .address:
+                break
+                
+            case .payment:
+                currentStep = .address
+                
+            case .tracking:
+                currentStep = .payment
+            }
+        }
+    }
+
 }
 
 enum CheckoutStep: Int {

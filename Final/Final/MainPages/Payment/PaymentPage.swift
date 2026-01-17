@@ -9,6 +9,9 @@ import SwiftUI
 
 struct PaymentPage: View {
     let products: [CartDisplayItem]
+    let selectedAddress: Address?
+    var nextAction: () -> Void
+    
     @ObservedObject private var paymentStore = PaymentStore.shared
 
     @State private var showAddCard = false
@@ -16,7 +19,6 @@ struct PaymentPage: View {
     @State private var showSuccess = false
     @State private var isPaymentSuccessful = false
     
-    var nextAction: () -> Void
     private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
 
     var totalAmount: Double {
@@ -199,6 +201,13 @@ struct PaymentPage: View {
     // MARK: - Pay Logic
     func pay() {
         paymentStore.processPayment(amount: totalAmount) {
+            if let selectedAddress = selectedAddress {
+                UserStore.shared.saveOrder(items: products, address: selectedAddress, totalAmount: totalAmount) { success in
+                    if success {
+                        print("Order saved successfully")
+                    }
+                }
+            }
             isPaymentSuccessful = true
         }
     }

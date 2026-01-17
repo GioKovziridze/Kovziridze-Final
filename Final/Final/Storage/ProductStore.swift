@@ -15,9 +15,26 @@ final class ProductStore: ObservableObject {
     @Published var errorMessage: String?
     @Published var cartProducts: [Product] = []
     
+    private var hasLoadedInitialData = false
     static let shared = ProductStore()
     
     private init() {}
+    
+    func loadInitialDataIfNeeded() async {
+        guard !hasLoadedInitialData else { return }
+        hasLoadedInitialData = true
+        
+        isLoading = true
+        errorMessage = nil
+        
+        async let productsTask: () = loadProducts()
+        async let categoriesTask: () = loadCategories()
+        
+        _ = await (productsTask, categoriesTask)
+        
+        isLoading = false
+        print("Network call has been made")
+    }
     
     func loadProducts() async {
         isLoading = true
