@@ -32,7 +32,7 @@ struct CheckoutContainer: View {
                         nextAction: goToTracking
                     )
                 case .tracking:
-                    OrderTrackingPage()
+                    OrderTrackingPreviewPage()
                 }
             }
             .transition(.opacity)

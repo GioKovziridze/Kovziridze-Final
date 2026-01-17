@@ -15,3 +15,20 @@ struct Order: Codable, Identifiable {
     var date: Date = Date()
     var status: String = "Pending"
 }
+
+enum OrderStatus: String, CaseIterable {
+    case pending = "Pending"
+    case confirmed = "Confirmed"
+    case preparing = "Preparing"
+    case onTheWay = "On the Way"
+    case nearby = "Nearby"
+    case delivered = "Delivered"
+}
+
+extension Order {
+    var progress: Double {
+        let steps = OrderStatus.allCases.map { $0.rawValue }
+        guard let index = steps.firstIndex(of: status) else { return 0 }
+        return Double(index + 1) / Double(steps.count)
+    }
+}

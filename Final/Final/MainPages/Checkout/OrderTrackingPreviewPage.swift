@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct OrderTrackingPage: View {
+struct OrderTrackingPreviewPage: View {
     @State private var currentStep: TrackingStep = .confirmed
     
     private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
@@ -116,7 +116,7 @@ enum TrackingStep: Int, CaseIterable {
 struct OrderTrackingPage_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            OrderTrackingPage()
+            OrderTrackingPreviewPage()
         }
     }
 }
