@@ -60,6 +60,7 @@ private extension CartPage {
                 .frame(width: 70, height: 70)
                 .background(Color.white)
                 .cornerRadius(12)
+                .scaledToFill()
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(item.product.title)

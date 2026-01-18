@@ -17,12 +17,12 @@ struct Order: Codable, Identifiable {
 }
 
 enum OrderStatus: String, CaseIterable {
-    case pending = "Pending"
-    case confirmed = "Confirmed"
-    case preparing = "Preparing"
-    case onTheWay = "On the Way"
-    case nearby = "Nearby"
-    case delivered = "Delivered"
+    case pending
+    case confirmed
+    case preparing
+    case onTheWay
+    case nearby
+    case delivered
 }
 
 extension Order {

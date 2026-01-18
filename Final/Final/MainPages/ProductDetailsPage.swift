@@ -85,8 +85,6 @@ struct ProductDetailsPage: View {
             // MARK: - Bottom Bar
             addToCartBar
             
-            // MARK: - Flying Dot Overlay
-            flyingDot
         }
         
         .navigationTitle("Details")
@@ -168,28 +166,6 @@ struct ProductDetailsPage: View {
             .padding()
             .background(.ultraThinMaterial)
         }
-    }
-
-    // MARK: - Flying Dot
-    private var flyingDot: some View {
-        GeometryReader { geo in
-            if showFlyingDot {
-                Circle()
-                    .fill(Color.green)
-                    .frame(width: 14, height: 14)
-                    .position(
-                        x: geo.size.width * 0.5,
-                        y: geo.size.height * 0.38
-                    )
-                    .offset(x: 57, y: 400)
-                    .transition(.scale)
-//                    .animation(
-//                        .interpolatingSpring(stiffness: 100, damping: 14),
-//                        value: showFlyingDot
-//                    )
-            }
-        }
-        .ignoresSafeArea()
     }
 
     // MARK: - Animation Trigger

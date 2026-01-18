@@ -175,3 +175,20 @@ extension UserStore {
     }
 }
 
+extension UserStore {
+    func updateOrderStatus(orderID: String, status: String) {
+        guard let uid = currentUser?.id else { return }
+
+        if let index = currentUser?.orders.firstIndex(where: { $0.id == orderID }) {
+            currentUser?.orders[index].status = status
+        }
+
+        Firestore.firestore()
+            .collection("users")
+            .document(uid)
+            .collection("orders")
+            .document(orderID)
+            .updateData(["status": status])
+    }
+}
+

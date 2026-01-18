@@ -18,12 +18,16 @@ struct OrdersPage: View {
                     emptyState
                 } else {
                     ForEach(userStore.currentUser!.orders) { order in
-                        NavigationLink {
-                            OrderTrackingPage(order: order)
-                        } label: {
+                        if order.status != "Delivered" {
+                            NavigationLink {
+                                OrderTrackingPage(order: order)
+                            } label: {
+                                OrderCard(order: order)
+                            }
+                        } else {
                             OrderCard(order: order)
+                                .foregroundColor(.green.opacity(0.3))
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }

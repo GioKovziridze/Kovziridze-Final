@@ -10,7 +10,8 @@ import SwiftUI
 
 struct OrderTrackingPreviewPage: View {
     @State private var currentStep: TrackingStep = .confirmed
-    
+    @Environment(\.dismiss) private var dismiss
+
     private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
 
     var body: some View {
@@ -22,7 +23,7 @@ struct OrderTrackingPreviewPage: View {
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            Text("Order #123456")
+            Text("Order ")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -53,8 +54,13 @@ struct OrderTrackingPreviewPage: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("Order Tracking")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Done") {
+                    dismiss()
+                }
+            }
+        }
     }
     
     // MARK: - Timeline Step

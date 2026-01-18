@@ -11,15 +11,14 @@ import MapKit
 struct OrderTrackingPage: View {
     let order: Order
 
+    @ObservedObject private var userStore = UserStore.shared
     @State private var courierCoordinate: CLLocationCoordinate2D
-    @State private var currentStatus: String
     @State private var route: MKRoute?
     @State private var routeCoordinates: [CLLocationCoordinate2D] = []
     @State private var routeIndex = 0
 
     init(order: Order) {
         self.order = order
-        _currentStatus = State(initialValue: order.status)
         
         _courierCoordinate = State(
             initialValue: CLLocationCoordinate2D(
@@ -28,6 +27,7 @@ struct OrderTrackingPage: View {
             )
         )
     }
+
 
     var body: some View {
         VStack {
@@ -58,6 +58,10 @@ struct OrderTrackingPage: View {
             longitude: order.address.longitude
         )
     }
+    
+    private var currentStatus: String {
+        userStore.currentUser?.orders.first(where: { $0.id == order.id })?.status ?? "Pending"
+    }
 }
 
 extension OrderTrackingPage {
@@ -86,7 +90,6 @@ extension OrderTrackingPage {
         Timer.scheduledTimer(withTimeInterval: 1.2, repeats: true) { timer in
             guard routeIndex < routeCoordinates.count else {
                 timer.invalidate()
-                currentStatus = "Delivered"
                 return
             }
             
@@ -99,17 +102,21 @@ extension OrderTrackingPage {
     func updateStatus() {
         let latDiff = abs(destinationCoordinate.latitude - courierCoordinate.latitude)
         let lngDiff = abs(destinationCoordinate.longitude - courierCoordinate.longitude)
-        
+
         let distance = max(latDiff, lngDiff)
-        
+
+        let newStatus: String
         if distance < 0.0005 {
-            currentStatus = "Delivered"
+            newStatus = "Delivered"
         } else if distance < 0.002 {
-            currentStatus = "Nearby"
+            newStatus = "Nearby"
         } else {
-            currentStatus = "On the Way"
+            newStatus = "On the Way"
         }
+
+        userStore.updateOrderStatus(orderID: order.id, status: newStatus)
     }
+
     
     private func fetchRoute() {
         let request = MKDirections.Request()
