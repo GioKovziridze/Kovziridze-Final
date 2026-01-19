@@ -11,10 +11,20 @@ struct ProductCategory: Identifiable, Codable, Hashable {
     let id: String
     let name: String
     
+    init(id: String, name: String) {
+        self.id = id
+        self.name = name
+    }
+    
     init(from decoder: Decoder) throws {
+        if let container = try? decoder.container(keyedBy: CodingKeys.self) {
+            self.id = try container.decode(String.self, forKey: .id)
+            self.name = try container.decode(String.self, forKey: .name)
+            return
+        }
+        
         let container = try decoder.singleValueContainer()
         let value = try container.decode(String.self)
-        
         self.id = value
         self.name = value
     }

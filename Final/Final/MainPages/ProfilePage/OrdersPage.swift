@@ -35,8 +35,10 @@ struct OrdersPage: View {
         }
         .navigationTitle("My Orders")
         .onAppear {
-            userStore.fetchOrders { orders in
-                print("Fetched \(orders.count) orders")
+            if userStore.currentUser?.orders.isEmpty == true {
+                userStore.fetchOrders { orders in
+                    userStore.currentUser?.orders = orders
+                }
             }
         }
     }
@@ -89,7 +91,7 @@ struct OrderCard: View {
                     .bold()
             }
 
-            Text(order.date.formatted(.dateTime.month().day().year()))
+            Text(order.date?.formatted(.dateTime.month().day().year()) ?? "")
                 .font(.caption)
                 .foregroundColor(.secondary)
         }

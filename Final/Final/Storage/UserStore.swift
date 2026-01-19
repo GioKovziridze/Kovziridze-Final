@@ -135,9 +135,9 @@ extension UserStore {
                     if let error = error {
                         print("Failed to save order:", error)
                         completion?(false)
-                    } else {
-                        print("Order saved successfully")
-                        self.currentUser?.orders.append(order)
+                    }
+                    self.fetchOrders { orders in
+                        self.currentUser?.orders = orders
                         completion?(true)
                     }
                 }
@@ -148,31 +148,46 @@ extension UserStore {
     }
 
     func fetchOrders(completion: @escaping ([Order]) -> Void) {
-        guard let uid = currentUser?.id else { return }
+        guard let uid = currentUser?.id else {
+            print("❌ No UID")
+            completion([])
+            return
+        }
+
         let db = Firestore.firestore()
 
         db.collection("users")
             .document(uid)
             .collection("orders")
-            .order(by: "date", descending: true)
             .getDocuments { snapshot, error in
+
                 if let error = error {
-                    print("Failed to fetch orders:", error)
+                    print("❌ Firestore error:", error)
                     completion([])
                     return
                 }
 
                 guard let documents = snapshot?.documents else {
+                    print("❌ No documents")
                     completion([])
                     return
                 }
 
-                let orders: [Order] = documents.compactMap { doc in
-                    try? doc.data(as: Order.self)
+                print("✅ Firestore documents count:", documents.count)
+
+                let orders = documents.compactMap { doc -> Order? in
+                    do {
+                        return try doc.data(as: Order.self)
+                    } catch {
+                        print("❌ Decoding failed for doc \(doc.documentID):", error)
+                        return nil
+                    }
                 }
+
                 completion(orders)
             }
     }
+
 }
 
 extension UserStore {

@@ -4,7 +4,7 @@
 //
 //  Created by nika kovziridze on 16.01.26.
 //
-
+import FirebaseFirestore
 import Foundation
 
 struct Order: Codable, Identifiable {
@@ -12,8 +12,9 @@ struct Order: Codable, Identifiable {
     var items: [CartDisplayItem]
     var address: Address
     var totalAmount: Double
-    var date: Date = Date()
-    var status: String = "Pending"
+   
+    @ServerTimestamp var date: Date?
+      var status: String = "Pending"
 }
 
 enum OrderStatus: String, CaseIterable {
