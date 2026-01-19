@@ -79,6 +79,8 @@ struct WishlistCard: View {
         VStack(alignment: .leading, spacing: 8) {
             ZStack(alignment: .topTrailing) {
                 Image(product.image)
+                    .resizable()
+                    .scaledToFit()
                     .frame(width: 130, height: 140)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     .scaledToFill()

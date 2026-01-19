@@ -12,52 +12,72 @@ struct HomePage: View {
     @ObservedObject private var userStore = UserStore.shared
     @ObservedObject private var store = ProductStore.shared
 
-    //TODO: - remove this later
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    header
-                    promoBanner
-                    
-                    Text("Category")
-                        .font(.headline)
-                        .foregroundColor(.black)
-                        .padding(.trailing, 200)
-                    
-                    categoryGrid
-                    
-                    Text("Featured products")
-                        .font(.headline)
-                        .foregroundColor(.black)
-                        .padding(.trailing, 200)
-                    
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
-                            ForEach(store.products.prefix(5)) { product in
-                                NavigationLink {
-                                    ProductDetailsPage(product: product)
-                                } label: {
-                                    ProductCardView(product: product)
+        ZStack {
+            NavigationStack {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        header
+                        promoBanner
+                        
+                        Text("Category")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                            .padding(.trailing, 200)
+                        
+                        categoryGrid
+                        
+                        Text("Featured products")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                            .padding(.trailing, 200)
+                        
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 16) {
+                                ForEach(store.products.prefix(5)) { product in
+                                    NavigationLink {
+                                        ProductDetailsPage(product: product)
+                                    } label: {
+                                        ProductCardView(product: product)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
                             }
+                            .padding(.horizontal)
+                            .padding(.bottom, 10)
                         }
-                        .padding(.horizontal)
-                        .padding(.bottom, 10)
+                    }
+                    .task {
+                        await store.loadInitialDataIfNeeded()
                     }
                 }
-                .task {
-                    await store.loadInitialDataIfNeeded()
-                    print("---------------")
-                    print(store.categories.count)
-                }
+                .scrollIndicators(.hidden)
             }
-            .scrollIndicators(.hidden)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbar(.hidden, for: .navigationBar)
+            
+            //MARK: - Notification
+            
+            if userStore.showOrderNotification {
+                VStack {
+                    OrderNotificationView(
+                        message: "Order arriving! Track your order.",
+                        action: {
+                            TabBarController.shared?.switchToProfileTab()
+                            withAnimation {
+                                userStore.showOrderNotification = false
+                            }
+                        }
+                    )
+                        .padding(.top, 50)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .zIndex(1)
+            }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(.hidden, for: .navigationBar)
-        .toolbar(.hidden, for: .navigationBar)
     }
     
     

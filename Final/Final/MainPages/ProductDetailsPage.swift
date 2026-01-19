@@ -13,7 +13,6 @@ struct ProductDetailsPage: View {
     let productStore = ProductStore.shared
 
     // MARK: - Animation State
-    @State private var showFlyingDot = false
     @State private var cartPulse = false
     @State private var showCartBadge = false
 
@@ -171,14 +170,12 @@ struct ProductDetailsPage: View {
     // MARK: - Animation Trigger
     private func triggerAddToCartAnimation() {
         withAnimation {
-            showFlyingDot = true
             cartPulse = true
             showCartBadge = true
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
             withAnimation {
-                showFlyingDot = false
                 cartPulse = false
             }
         }

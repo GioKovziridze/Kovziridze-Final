@@ -14,6 +14,7 @@ final class UserStore: ObservableObject {
     static let shared = UserStore()
     
     @Published var currentUser: UserModel?
+    @Published var showOrderNotification = false
     
     private var listener: ListenerRegistration?
     
@@ -86,6 +87,23 @@ final class UserStore: ObservableObject {
             "cart": cartDicts
         ])
     }
+    // remove after purchase
+    func removePurchasedItems(_ items: [CartDisplayItem]) {
+        guard let user = currentUser else { return }
+
+        let updatedCart = user.cart.filter { cartItem in
+            !items.contains(where: { $0.id == cartItem.id })
+        }
+
+        currentUser?.cart = updatedCart
+
+        let cartDicts = updatedCart.map { ["id": $0.id, "quantity": $0.quantity] }
+        Firestore.firestore()
+            .collection("users")
+            .document(user.id ?? "")
+            .updateData(["cart": cartDicts])
+    }
+
 
 }
 extension UserStore {
@@ -118,7 +136,7 @@ extension UserStore {
 //MARK: - saving order logic
 extension UserStore {
 
-    func saveOrder(items: [CartDisplayItem], address: Address, totalAmount: Double, completion: ((Bool) -> Void)? = nil) {
+    func saveOrder(items: [CartDisplayItem], address: Address, totalAmount: Double, completion: ((Bool) -> Void)? = nil, showNotification: (() -> Void)? = nil) {
         guard let uid = currentUser?.id else { return }
 
         let db = Firestore.firestore()
@@ -139,6 +157,8 @@ extension UserStore {
                     self.fetchOrders { orders in
                         self.currentUser?.orders = orders
                         completion?(true)
+                        
+                        showNotification?()
                     }
                 }
         } catch {
@@ -149,7 +169,7 @@ extension UserStore {
 
     func fetchOrders(completion: @escaping ([Order]) -> Void) {
         guard let uid = currentUser?.id else {
-            print("❌ No UID")
+            print("No UID")
             completion([])
             return
         }
@@ -162,24 +182,24 @@ extension UserStore {
             .getDocuments { snapshot, error in
 
                 if let error = error {
-                    print("❌ Firestore error:", error)
+                    print("Firestore error:", error)
                     completion([])
                     return
                 }
 
                 guard let documents = snapshot?.documents else {
-                    print("❌ No documents")
+                    print("No documents")
                     completion([])
                     return
                 }
 
-                print("✅ Firestore documents count:", documents.count)
+                print("Firestore documents count:", documents.count)
 
                 let orders = documents.compactMap { doc -> Order? in
                     do {
                         return try doc.data(as: Order.self)
                     } catch {
-                        print("❌ Decoding failed for doc \(doc.documentID):", error)
+                        print("Decoding failed for doc \(doc.documentID):", error)
                         return nil
                     }
                 }

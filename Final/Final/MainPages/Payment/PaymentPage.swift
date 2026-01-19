@@ -202,13 +202,28 @@ struct PaymentPage: View {
     func pay() {
         paymentStore.processPayment(amount: totalAmount) {
             if let selectedAddress = selectedAddress {
-                UserStore.shared.saveOrder(items: products, address: selectedAddress, totalAmount: totalAmount) { success in
+                UserStore.shared.saveOrder(
+                    items: products,
+                    address: selectedAddress,
+                    totalAmount: totalAmount
+                ) { success in
                     if success {
                         print("Order saved successfully")
+                        
+                        UserStore.shared.removePurchasedItems(products)
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                            UserStore.shared.showOrderNotification = true
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                UserStore.shared.showOrderNotification = false
+                            }
+                        }
                     }
                 }
             }
             isPaymentSuccessful = true
         }
     }
+
 }

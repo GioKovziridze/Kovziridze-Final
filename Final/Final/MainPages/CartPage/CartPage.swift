@@ -57,6 +57,8 @@ private extension CartPage {
         HStack(spacing: 12) {
 
             Image(item.product.image)
+                .resizable()
+                .scaledToFit()
                 .frame(width: 70, height: 70)
                 .background(Color.white)
                 .cornerRadius(12)

@@ -18,7 +18,7 @@ struct ProductCardView: View {
             ZStack(alignment: .topTrailing) {
                 Image(product.image)
                     .resizable()
-                    .scaledToFill()
+                    .scaledToFit()
                     .frame(width: 130, height: 130)
                     .clipShape(RoundedRectangle(cornerRadius: 18))
                     .clipped()
