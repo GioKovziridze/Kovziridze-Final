@@ -48,6 +48,9 @@ final class TabBarController: UITabBarController {
     func switchToProfileTab() {
         self.selectedIndex = 3
     }
+    func switchToExploreTab() {
+        self.selectedIndex = 1
+    }
     
     private func setupCustomTabBarAppearance() {
         tabBar.backgroundImage = UIImage()

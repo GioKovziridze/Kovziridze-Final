@@ -43,7 +43,6 @@ struct ExplorePage: View {
                 
             }
         }
-        .navigationTitle("Explore")
     }
     
     var categoryChips: some View {

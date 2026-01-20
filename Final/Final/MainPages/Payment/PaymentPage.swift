@@ -211,7 +211,7 @@ struct PaymentPage: View {
                         print("Order saved successfully")
                         
                         UserStore.shared.removePurchasedItems(products)
-                        
+
                         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                             UserStore.shared.showOrderNotification = true
                             

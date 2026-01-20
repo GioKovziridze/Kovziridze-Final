@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import UserNotifications
 
 struct HomePage: View {
     @ObservedObject private var userStore = UserStore.shared

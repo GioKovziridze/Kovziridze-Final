@@ -7,43 +7,53 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct OrderNotificationView: View {
     let message: String
     let action: () -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "bag.fill")
-                .foregroundColor(.black)
-                .font(.title2)
+        HStack(spacing: 16) {
+            ZStack {
+                Circle()
+                    .fill(Color.green.opacity(0.2))
+                    .frame(width: 40, height: 40)
+                Image(systemName: "bag.fill")
+                    .foregroundColor(Color.green)
+                    .font(.system(size: 20, weight: .bold))
+            }
 
-            Text(message)
-                .foregroundColor(.black)
-                .font(.subheadline)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
-            
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Order Confirmed")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
+
+                Text(message)
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+            }
+
             Spacer()
 
             Button(action: action) {
                 Text("Track")
+                    .font(.footnote)
                     .bold()
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
-                    .background(Color.white.opacity(0.2))
-                    .foregroundColor(.black)
+                    .background(Color.green.opacity(0.1))
+                    .foregroundColor(.green)
                     .clipShape(Capsule())
             }
         }
-        .padding(.vertical, 12)
-        .padding(.horizontal, 16)
+        .padding()
         .background(
-            LinearGradient(colors: [Color.green, Color.green.opacity(0.85)], startPoint: .topLeading, endPoint: .bottomTrailing)
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.systemBackground))
+                .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 4)
         )
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.25), radius: 6, x: 0, y: 3)
         .padding(.horizontal, 16)
         .padding(.top, 50)
         .transition(.move(edge: .top).combined(with: .opacity))

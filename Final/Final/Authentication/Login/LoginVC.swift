@@ -217,6 +217,8 @@ final class LoginVC: UIViewController {
     private func bindViewModel() {
         viewModel.onSuccess = { [weak self] userModel in
             guard let self = self else { return }
+            UserStore.shared.currentUser = userModel
+            
             let tabBar = TabBarController()
             self.navigationController?.setViewControllers([tabBar], animated: true)
         }

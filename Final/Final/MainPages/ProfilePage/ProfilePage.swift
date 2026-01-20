@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct ProfilePage: View {
     @ObservedObject private var userStore = UserStore.shared
@@ -82,8 +83,6 @@ struct ProfilePage: View {
     }
 }
 
-//TODO: - Move these extensions
-
 private extension ProfilePage {
 
     var profileHeader: some View {
@@ -155,11 +154,13 @@ private extension ProfilePage {
         }
     }
 }
+
+
 private extension ProfilePage {
 
     var logoutButton: some View {
         Button {
-            //logout logic
+            logOut()
         } label: {
             Text("Log Out")
                 .foregroundColor(.red)
@@ -170,7 +171,31 @@ private extension ProfilePage {
         }
         .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 4)
     }
+    
+    func logOut() {
+        do {
+            try Auth.auth().signOut()
+            
+            if let sceneDelegate = UIApplication.shared.connectedScenes
+                .first?.delegate as? SceneDelegate {
+                
+                let authContainer = AuthContainerVC()
+                let navController = UINavigationController(rootViewController: authContainer)
+                navController.navigationBar.isHidden = true
+                
+                UIView.transition(with: sceneDelegate.window!,
+                                  duration: 0.5,
+                                  options: .transitionFlipFromLeft,
+                                  animations: {
+                    sceneDelegate.window?.rootViewController = navController
+                })
+            }
+        } catch let error {
+            print("Failed to sign out: \(error.localizedDescription)")
+        }
+    }
 }
+
 //TODO: - gaitane mere da gaaswore
 struct PaymentMethodsPage: View { var body: some View { Text("Payments") } }
 struct AddressesPage: View { var body: some View { Text("Addresses") } }

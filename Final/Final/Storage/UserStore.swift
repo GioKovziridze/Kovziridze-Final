@@ -87,15 +87,14 @@ final class UserStore: ObservableObject {
             "cart": cartDicts
         ])
     }
-    // remove after purchase
     func removePurchasedItems(_ items: [CartDisplayItem]) {
-        guard let user = currentUser else { return }
+        guard let user = UserStore.shared.currentUser else { return }
 
         let updatedCart = user.cart.filter { cartItem in
             !items.contains(where: { $0.id == cartItem.id })
         }
 
-        currentUser?.cart = updatedCart
+        UserStore.shared.currentUser?.cart = updatedCart
 
         let cartDicts = updatedCart.map { ["id": $0.id, "quantity": $0.quantity] }
         Firestore.firestore()

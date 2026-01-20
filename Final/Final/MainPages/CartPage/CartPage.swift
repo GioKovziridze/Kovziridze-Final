@@ -50,7 +50,7 @@ struct CartPage: View {
         viewModel.buildCart(user: user, products: productStore.products)
     }
 }
-//TODO: - move these extensions
+
 private extension CartPage {
 
     func cartItemRow(_ item: CartDisplayItem) -> some View {
@@ -73,13 +73,13 @@ private extension CartPage {
                     .font(.headline)
                     .foregroundColor(accentGreen)
 
-                quantityControls(item)
+                viewModel.quantityControls(item)
             }
 
             Spacer()
 
             Button {
-                removeItem(item)
+                viewModel.removeItem(item)
             } label: {
                 Image(systemName: "trash")
                     .foregroundColor(.red)
@@ -91,64 +91,6 @@ private extension CartPage {
         .shadow(color: .black.opacity(0.05), radius: 8)
     }
 }
-
-private extension CartPage {
-
-    func quantityControls(_ item: CartDisplayItem) -> some View {
-        HStack(spacing: 12) {
-            Button {
-                updateQuantity(item, delta: -1)
-            } label: {
-                Image(systemName: "minus")
-            }
-
-            Text("\(item.quantity)")
-                .frame(minWidth: 20)
-
-            Button {
-                updateQuantity(item, delta: 1)
-            } label: {
-                Image(systemName: "plus")
-            }
-        }
-        .font(.caption)
-        .padding(6)
-        .background(accentGreen.opacity(0.15))
-        .cornerRadius(10)
-        .foregroundColor(accentGreen)
-    }
-}
-
-private extension CartPage {
-
-    func updateQuantity(_ item: CartDisplayItem, delta: Int) {
-        let newQuantity = max(1, item.quantity + delta)
-
-        let updatedItem = CartItem(
-            id: item.id,
-            quantity: newQuantity
-        )
-
-        userStore.updateCart(item: updatedItem)
-    }
-
-    func removeItem(_ item: CartDisplayItem) {
-        guard let user = userStore.currentUser else { return }
-
-        let updatedCart = user.cart.filter { $0.id != item.id }
-        userStore.currentUser?.cart = updatedCart
-
-        let cartDicts = updatedCart.map {
-            ["id": $0.id, "quantity": $0.quantity]
-        }
-
-        Firestore.firestore()
-            .collection("users")
-            .document(user.id ?? "")
-            .updateData(["cart": cartDicts])
-    }
-}
-
 
 private extension CartPage {
 
@@ -182,22 +124,73 @@ private extension CartPage {
         .cornerRadius(24)
         .shadow(color: .black.opacity(0.1), radius: 12)
     }
-}
-private extension CartPage {
-
+    
     var emptyState: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "cart")
-                .font(.system(size: 48))
-                .foregroundColor(accentGreen)
-
-            Text("Your cart is empty")
-                .font(.headline)
-
-            Text("Add products to start shopping")
+        VStack(spacing: 24) {
+            Image(systemName: "cart.fill")
+                .font(.system(size: 60))
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [accentGreen, accentGreen.opacity(0.6)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .scaleEffect(1.1)
+                .padding()
+                .background(
+                    Circle()
+                        .fill(accentGreen.opacity(0.1))
+                        .frame(width: 120, height: 120)
+                )
+                .shadow(color: accentGreen.opacity(0.3), radius: 10, x: 0, y: 5)
+                .animation(
+                    .easeInOut(duration: 1.2)
+                    .repeatForever(autoreverses: true),
+                    value: UUID()
+                )
+            
+            Text("Your Cart is Empty")
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
+            
+            Text("Add products to start shopping and discover amazing deals!")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+            
+            Button(action: {
+                TabBarController.shared?.switchToExploreTab()
+            }) {
+                Text("Start Shopping")
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        LinearGradient(
+                            colors: [accentGreen, accentGreen.opacity(0.7)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(12)
+                    .shadow(color: accentGreen.opacity(0.4), radius: 8, x: 0, y: 4)
+            }
+            .padding(.horizontal, 40)
         }
         .padding()
+        .frame(maxHeight: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 24)
+                .fill(Color.white)
+                .shadow(color: Color.black.opacity(0.05), radius: 12, x: 0, y: 6)
+        )
+        .padding(.horizontal, 16)
+        .padding(.bottom, 30)
     }
+
 }
+
