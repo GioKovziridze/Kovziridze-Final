@@ -68,7 +68,7 @@ struct ProfilePage: View {
                         profileRow(
                             title: "Help & Support",
                             systemImage: "questionmark.circle",
-                            destination: SupportPage()
+                            destination: SupportChatView()
                         )
                     }
 
@@ -200,4 +200,4 @@ private extension ProfilePage {
 struct PaymentMethodsPage: View { var body: some View { Text("Payments") } }
 struct AddressesPage: View { var body: some View { Text("Addresses") } }
 struct SettingsPage: View { var body: some View { Text("Settings") } }
-struct SupportPage: View { var body: some View { Text("Support") } }
+
