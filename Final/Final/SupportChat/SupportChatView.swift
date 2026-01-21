@@ -8,41 +8,45 @@
 import SwiftUI
 
 struct SupportChatView: View {
-
-    @StateObject private var viewModel = SupportChatViewModel()
-
+    
+    @StateObject private var vm = SupportChatViewModel()
+    
     var body: some View {
         VStack {
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: 12) {
-                    ForEach(viewModel.messages) { msg in
+                LazyVStack(spacing: 12) {
+                    ForEach(vm.messages) { msg in
                         HStack {
-                            if msg.role == "user" { Spacer() }
-
-                            Text(msg.content)
+                            if msg.role == .user { Spacer() }
+                            
+                            Text(msg.text)
                                 .padding()
                                 .background(
-                                    msg.role == "user" ? Color.blue : Color.gray.opacity(0.2)
+                                    msg.role == .user
+                                    ? Color.blue
+                                    : Color.gray.opacity(0.2)
                                 )
-                                .foregroundColor(msg.role == "user" ? .white : .black)
+                                .foregroundColor(
+                                    msg.role == .user ? .white : .black
+                                )
                                 .cornerRadius(14)
-                                .frame(maxWidth: UIScreen.main.bounds.width * 0.75, alignment: .leading)
-
-                            if msg.role == "assistant" { Spacer() }
+                                .frame(maxWidth: 280, alignment: .leading)
+                            
+                            if msg.role == .assistant { Spacer() }
                         }
                     }
                 }
+                .padding()
             }
-
+            
             HStack {
-                TextField("Ask support...", text: $viewModel.input)
+                TextField("Ask support…", text: $vm.input)
                     .textFieldStyle(.roundedBorder)
-                    .frame(minHeight: 30)
-
+                
                 Button("Send") {
-                    viewModel.send()
+                    vm.send()
                 }
-                .disabled(viewModel.input.isEmpty || viewModel.isLoading)
+                .disabled(vm.input.isEmpty || vm.isLoading)
             }
             .padding()
         }

@@ -4,10 +4,16 @@
 //
 //  Created by nika kovziridze on 20.01.26.
 //
-import SwiftUI
+
+import Foundation
 
 struct ChatMessage: Identifiable {
+    enum Role {
+        case user
+        case assistant
+    }
+
     let id = UUID()
-    let role: String
-    let content: String
+    let role: Role
+    let text: String
 }
