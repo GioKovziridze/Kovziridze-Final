@@ -8,6 +8,12 @@
 import SwiftUI
 import MapKit
 
+enum CheckoutStep: Int {
+    case address = 0
+    case payment = 1
+    case tracking = 2
+}
+
 struct CheckoutContainer: View {
     @State private var currentStep: CheckoutStep = .address
     @State private var selectedAddress: Address?
@@ -122,9 +128,4 @@ struct CheckoutContainer: View {
 
 }
 
-enum CheckoutStep: Int {
-    case address = 0
-    case payment = 1
-    case tracking = 2
-}
 

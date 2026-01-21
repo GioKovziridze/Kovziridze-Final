@@ -12,7 +12,6 @@ struct CartPage: View {
     @StateObject private var viewModel = CartViewModel()
     @ObservedObject private var userStore = UserStore.shared
     @ObservedObject private var productStore = ProductStore.shared
-    
 
     private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
 

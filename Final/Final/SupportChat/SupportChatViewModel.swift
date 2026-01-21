@@ -47,7 +47,7 @@ final class SupportChatViewModel: ObservableObject {
                 messages.append(ChatMessage(role: .assistant, text: reply))
             } catch {
                 messages.append(
-                    ChatMessage(role: .assistant, text: "❌ \(error.localizedDescription)")
+                    ChatMessage(role: .assistant, text: " \(error.localizedDescription)")
                 )
                 print("Detailed Error: \(error)")
             }

@@ -8,7 +8,6 @@
 import UIKit
 
 extension UIStackView {
-    
     static func makeLabeledField(title: String, field: UITextField) -> UIStackView {
         let label = UILabel()
         label.text = title
