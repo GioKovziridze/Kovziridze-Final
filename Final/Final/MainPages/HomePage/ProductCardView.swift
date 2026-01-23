@@ -5,60 +5,78 @@
 //  Created by nika kovziridze on 11.01.26.
 //
 
+//@State private var isFavorite = false
 import SwiftUI
 
 struct ProductCardView: View {
     let product: Product
     @ObservedObject private var userStore = UserStore.shared
-    @State private var isFavorite = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        ZStack(alignment: .topTrailing) {
+            RoundedRectangle(cornerRadius: 22)
+                .fill(.ultraThinMaterial)
+                .background(
+                    RoundedRectangle(cornerRadius: 22)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color(red: 0.18, green: 0.16, blue: 0.28),
+                                    Color(red: 0.22, green: 0.20, blue: 0.35)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                )
+                .shadow(color: .black.opacity(0.25), radius: 12, x: 0, y: 8)
 
-            ZStack(alignment: .topTrailing) {
+            VStack(alignment: .leading, spacing: 8) {
+
                 Image(product.image)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 130, height: 130)
+                    .frame(height: 120)
                     .clipShape(RoundedRectangle(cornerRadius: 18))
-                    .clipped()
+                    .shadow(color: .black.opacity(0.35), radius: 12, x: 0, y: 8)
+                    .offset(y: -6)
 
-                Button {
-                    userStore.toggleFavorite(productID: product.id)
-                } label: {
-                    Image(systemName: userStore.isFavorite(productID: product.id) ? "heart.fill" : "heart")
-                        .foregroundColor(isFavorite ? .red : .gray)
-                        .padding(8)
-                        .background(Color.white.opacity(0.9))
-                        .clipShape(Circle())
-                        .shadow(radius: 2)
+                Text(product.title)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+                    .lineLimit(2)
+
+                Text("$\(product.price, specifier: "%.2f")")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(.white)
+
+                HStack(spacing: 4) {
+                    ForEach(0..<5) { index in
+                        Image(systemName: index < Int(product.rating.rate) ? "star.fill" : "star")
+                            .font(.system(size: 11))
+                            .foregroundColor(.yellow.opacity(0.9))
+                    }
+
+                    Text("(\(product.rating.count))")
+                        .font(.system(size: 11))
+                        .foregroundColor(.white.opacity(0.6))
                 }
-                .padding(.leading, 15)
             }
+            .padding(12)
 
-            Text(product.title)
-                .font(.system(size: 15, weight: .semibold))
-                .lineLimit(2)
-
-            Text("$\(product.price, specifier: "%.2f")")
-                .font(.system(size: 16, weight: .bold))
-
-            HStack(spacing: 4) {
-                ForEach(0..<5) { index in
-                    Image(systemName: index < Int(product.rating.rate) ? "star.fill" : "star")
-                        .font(.system(size: 12))
-                        .foregroundColor(.orange)
-                }
-
-                Text("(\(product.rating.count))")
-                    .font(.system(size: 12))
-                    .foregroundColor(.gray)
+            Button {
+                userStore.toggleFavorite(productID: product.id)
+            } label: {
+                Image(systemName: userStore.isFavorite(productID: product.id) ? "heart.fill" : "heart")
+                    .foregroundColor(userStore.isFavorite(productID: product.id) ? .pink : .white)
+                    .frame(width: 32, height: 32)
+                    .background(.ultraThinMaterial)
+                    .clipShape(Circle())
+                    .shadow(color: .black.opacity(0.25), radius: 6, x: 0, y: 4)
             }
+            .padding(6)
         }
-        .padding(12)
-        .frame(width: 170, height: 230)
-        .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+        .frame(width: 170, height: 240)
+        .clipShape(RoundedRectangle(cornerRadius: 22))
     }
 }

@@ -35,6 +35,7 @@ struct CartPage: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Cart")
+            .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 reloadCart()
             }

@@ -17,13 +17,14 @@ struct WishlistPage: View {
     
     var body: some View {
         ScrollView {
+            
+            Text("Your Wishlist")
+                .font(.system(size: 28, weight: .bold))
+                .foregroundColor(.black)
+                .padding(.horizontal)
+                .padding(.top)
+            
             VStack(alignment: .leading, spacing: 24) {
-                
-                Text("Your Wishlist")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundColor(.black)
-                    .padding(.horizontal)
-                    .padding(.top)
                 
                 if userStore.currentUser?.favorites.isEmpty ?? true {
                     VStack(spacing: 16) {

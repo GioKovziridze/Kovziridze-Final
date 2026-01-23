@@ -211,13 +211,11 @@ struct PaymentPage: View {
                         print("Order saved successfully")
                         
                         UserStore.shared.removePurchasedItems(products)
-
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                            UserStore.shared.showOrderNotification = true
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                UserStore.shared.showOrderNotification = false
-                            }
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
+                            GlobalNotificationManager.shared.show(
+                                message: "Order arriving! Track your order."
+                            )
                         }
                     }
                 }

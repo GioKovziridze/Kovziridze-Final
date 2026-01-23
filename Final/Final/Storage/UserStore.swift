@@ -14,7 +14,6 @@ final class UserStore: ObservableObject {
     static let shared = UserStore()
     
     @Published var currentUser: UserModel?
-    @Published var showOrderNotification = false
     
     private var listener: ListenerRegistration?
     
@@ -64,8 +63,6 @@ final class UserStore: ObservableObject {
         }
     }
 
-
-    
     func stopListening() {
         listener?.remove()
     }

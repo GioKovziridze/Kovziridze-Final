@@ -26,22 +26,23 @@ struct ExplorePage: View {
                 SearchBar(text: $searchText)
                     .padding(.horizontal)
                 categoryChips
-                
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 20) {
-                        ForEach(filteredProducts) { product in
-                            NavigationLink {
-                                ProductDetailsPage(product: product)
-                            } label: {
-                                ProductCardView(product: product)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-                
+                productList
             }
+        }
+    }
+    var productList: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(filteredProdurcts) { product in
+                    NavigationLink {
+                        ProductDetailsPage(product: product)
+                    } label: {
+                        ProductCardView(product: product)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal)
         }
     }
     

@@ -44,6 +44,15 @@ extension ProductCategory {
         default: return "square.grid.2x2"
         }
     }
+    var imageName: String {
+        switch name {
+        case "men's clothing": return "model5"
+        case "women's clothing": return "model7"
+        case "electronics": return "model8"
+        case "jewelery": return "model9"
+        default: return "square.grid.2x2"
+        }
+    }
     func productCount(in products: [Product]) -> Int {
         products.filter { $0.category == self }.count
     }

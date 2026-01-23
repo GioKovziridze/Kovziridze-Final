@@ -23,29 +23,47 @@ struct CategoryChip: View {
                 Text(title)
                     .font(.system(size: 14, weight: .medium))
             }
-            .foregroundColor(isSelected ? .black : .gray)
+            .foregroundColor(isSelected ? .white : .white.opacity(0.7))
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
             .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(isSelected ? selectedGreen : Color.white)
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(.ultraThinMaterial)
+                    
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(
+                            LinearGradient(
+                                colors: isSelected
+                                    ? [Color(red: 0.45, green: 0.40, blue: 0.85), Color(red: 0.25, green: 0.35, blue: 0.75)]
+                                    : [Color(red: 0.18, green: 0.16, blue: 0.28), Color(red: 0.22, green: 0.20, blue: 0.35)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .opacity(isSelected ? 1 : 0.8)
+                }
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(isSelected ? selectedGreen : Color.gray.opacity(0.3), lineWidth: 1)
+                    .stroke(
+                        isSelected
+                            ? Color.white.opacity(0.3)
+                            : Color.white.opacity(0.1),
+                        lineWidth: 1
+                    )
             )
             .shadow(
-                color: isSelected ? selectedGreen.opacity(0.35) : .black.opacity(0.05),
-                radius: isSelected ? 8 : 3,
+                color: isSelected
+                    ? Color.white.opacity(0.2)
+                    : Color.black.opacity(0.15),
+                radius: isSelected ? 6 : 2,
                 x: 0,
-                y: 4
+                y: 2
             )
-            .animation(.easeInOut(duration: 0.25), value: isSelected)
+            .scaleEffect(isSelected ? 1.05 : 1)
+            .animation(.spring(response: 0.35, dampingFraction: 0.75), value: isSelected)
         }
         .buttonStyle(.plain)
-    }
-    
-    private var selectedGreen: Color {
-        Color(red: 0.55, green: 1.0, blue: 0.6)
     }
 }

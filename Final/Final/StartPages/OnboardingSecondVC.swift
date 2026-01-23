@@ -15,7 +15,7 @@ final class OnboardingSecondVC: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Discover our collections"
-        label.font = .systemFont(ofSize: 28, weight: .bold)
+        label.font = UIFont(name: "AvenirNext-Bold", size: 28)
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -35,7 +35,7 @@ final class OnboardingSecondVC: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Join us to start shopping"
-        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
         label.textAlignment = .center
         label.textColor = .label
         return label
@@ -48,13 +48,11 @@ final class OnboardingSecondVC: UIViewController {
         button.setTitleColor(.label, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
 
-        // Glass-like look
         button.backgroundColor = UIColor.white.withAlphaComponent(0.25)
         button.layer.cornerRadius = 16
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.white.withAlphaComponent(0.3).cgColor
 
-        // Soft shadow
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOpacity = 0.15
         button.layer.shadowOffset = CGSize(width: 0, height: 8)

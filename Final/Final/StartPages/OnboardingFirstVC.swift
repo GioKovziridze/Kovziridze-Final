@@ -9,11 +9,14 @@ import UIKit
 
 class OnboardingFirstVC: UIViewController {
 
-    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 28, weight: .bold)
+        label.textColor = .white
+        label.font = UIFont(name: "AvenirNext-DemiBold", size: 28)
+        label.shadowColor = UIColor.black.withAlphaComponent(0.3)
+        label.shadowOffset = CGSize(width: 1, height: 1)
+
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -52,21 +55,41 @@ class OnboardingFirstVC: UIViewController {
 
     let nextButton: UIButton = {
         let button = UIButton(type: .system)
-        
+
         let image = UIImage(
-            systemName: "arrowtriangle.right.fill",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
+            systemName: "chevron.right",
+            withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: 18,
+                weight: .semibold
+            )
         )
-        
         button.setImage(image, for: .normal)
-        button.tintColor = .black
+        button.tintColor = .label
+
         button.translatesAutoresizingMaskIntoConstraints = false
-        
+        button.widthAnchor.constraint(equalToConstant: 48).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 48).isActive = true
+
+        button.layer.cornerRadius = 24
+        button.clipsToBounds = true
+
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterial))
+        blurView.isUserInteractionEnabled = false
+        blurView.frame = CGRect(x: 0, y: 0, width: 48, height: 48)
+        blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        button.insertSubview(blurView, at: 0)
+
+        button.layer.borderWidth = 0.5
+        button.layer.borderColor = UIColor.white.withAlphaComponent(0.25).cgColor
+
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.15
+        button.layer.shadowRadius = 8
+        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+
         return button
     }()
 
-
-    
     private let bottomContainer: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -132,13 +155,39 @@ class OnboardingFirstVC: UIViewController {
     private func setupContainer() {
         view.addSubview(bottomContainer)
         
+        let blurEffect = UIBlurEffect(style: .systemMaterialDark)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.translatesAutoresizingMaskIntoConstraints = false
+        blurView.layer.cornerRadius = 32
+        blurView.clipsToBounds = true
+        
+        let tintView = UIView()
+        tintView.backgroundColor = UIColor(red: 0.1, green: 0.15, blue: 0.1, alpha: 0.3)
+        tintView.layer.cornerRadius = 32
+        tintView.clipsToBounds = true
+        tintView.translatesAutoresizingMaskIntoConstraints = false
+        
+        bottomContainer.addSubview(blurView)
+        bottomContainer.addSubview(tintView)
+        
         NSLayoutConstraint.activate([
             bottomContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            bottomContainer.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.34)
+            bottomContainer.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.34),
+            
+            blurView.topAnchor.constraint(equalTo: bottomContainer.topAnchor),
+            blurView.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor),
+            blurView.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor),
+            blurView.bottomAnchor.constraint(equalTo: bottomContainer.bottomAnchor),
+            
+            tintView.topAnchor.constraint(equalTo: bottomContainer.topAnchor),
+            tintView.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor),
+            tintView.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor),
+            tintView.bottomAnchor.constraint(equalTo: bottomContainer.bottomAnchor),
         ])
     }
+
 }
 #Preview {
     OnboardingFirstVC()

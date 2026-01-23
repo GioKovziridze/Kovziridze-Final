@@ -86,8 +86,8 @@ struct ProductDetailsPage: View {
             
         }
         
-        .navigationTitle("Details")
-        .navigationBarTitleDisplayMode(.inline)
+//        .navigationTitle("Details")
+//        .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.hidden, for: .navigationBar)
         
     }

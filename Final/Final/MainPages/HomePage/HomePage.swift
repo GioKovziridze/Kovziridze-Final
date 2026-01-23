@@ -22,9 +22,10 @@ struct HomePage: View {
                         promoBanner
                         
                         Text("Category")
-                            .font(.headline)
+                            .font(.custom("Poppins-Medium", size: 26))
                             .foregroundColor(.black)
-                            .padding(.trailing, 200)
+                            .padding(.trailing, 230)
+                            .padding(4)
                         
                         categoryGrid
                         
@@ -58,26 +59,6 @@ struct HomePage: View {
             .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar(.hidden, for: .navigationBar)
             
-            //MARK: - Notification
-            
-            if userStore.showOrderNotification {
-                VStack {
-                    OrderNotificationView(
-                        message: "Order arriving! Track your order.",
-                        action: {
-                            TabBarController.shared?.switchToProfileTab()
-                            withAnimation {
-                                userStore.showOrderNotification = false
-                            }
-                        }
-                    )
-                        .padding(.top, 50)
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .transition(.move(edge: .top).combined(with: .opacity))
-                .zIndex(1)
-            }
         }
     }
     
@@ -120,72 +101,88 @@ struct HomePage: View {
             
             Spacer()
             
-            Button {
+            GlassIconButton(systemImage: "person.fill") {
                 TabBarController.shared?.switchToProfileTab()
-            } label: {
-                Image(systemName: "person.fill")
-                    .foregroundColor(.black)
-                    .frame(width: 44, height: 44)
-                    .background(Color(red: 0.55, green: 1.0, blue: 0.6).opacity(0.5))
-                    .clipShape(Circle())
-                    .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
             }
-            .buttonStyle(.plain)
             
-            Button {
+            GlassIconButton(systemImage: "heart") {
                 // favorite action
-            } label: {
-                Image(systemName: "heart")
-                    .foregroundColor(.black)
-                    .frame(width: 44, height: 44)
-                    .background(Color(red: 0.55, green: 1.0, blue: 0.6).opacity(0.5))
-                    .clipShape(Circle())
-                    .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
             }
-            .buttonStyle(.plain)
         }
         .padding()
     }
-    
     var promoBanner: some View {
         ZStack {
-            ZStack {
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color(red: 0.55, green: 1.0, blue: 0.6))
+            RoundedRectangle(cornerRadius: 22)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(red: 0.12, green: 0.10, blue: 0.25),
+                            Color(red: 0.18, green: 0.15, blue: 0.35)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    ZStack {
+                        Circle()
+                            .fill(Color(red: 0.45, green: 0.40, blue: 0.85))
+                            .frame(width: 180)
+                            .blur(radius: 24)
+                            .offset(x: 140, y: -110)
 
-                Circle()
-                    .fill(Color(red: 0.1, green: 0.6, blue: 0.35))
-                    .frame(width: 140, height: 140)
-                    .offset(x: 125, y: -100)
-                
-                Circle()
-                    .fill(Color(red: 0.85, green: 1.0, blue: 0.9))
-                    .frame(width: 160, height: 160)
-                    .offset(x: -155, y: 100)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 20))
+                        Circle()
+                            .fill(Color(red: 0.25, green: 0.35, blue: 0.75))
+                            .frame(width: 160)
+                            .blur(radius: 34)
+                            .offset(x: -140, y: 120)
+                    }
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 22)
+                        .stroke(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.14),
+                                    Color.white.opacity(0.02)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1
+                        )
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 22))
+                .shadow(color: .black.opacity(0.38), radius: 20, x: 0, y: 14)
 
             HStack(spacing: 16) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Discover the latest collections")
-                        .font(.system(size: 29, weight: .bold))
-                        .foregroundColor(.black.opacity(0.7))
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Discover the latest")
+                        .font(.custom("Poppins-Medium", size: 16))
+                        .foregroundColor(.white.opacity(0.7))
+
+                    Text("Collections")
+                        .font(.custom("Poppins-SemiBold", size: 27))
+                        .foregroundColor(.white)
                 }
 
                 Spacer()
 
-                Image("model4")
+                Image("model6")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 130, height: 190)
-                    .offset(y: 35)
+                    .frame(width: 140, height: 180)
+                    .shadow(color: .black.opacity(0.5), radius: 24, x: 0, y: 16)
             }
-            .padding()
+            .padding(.horizontal, 20)
+            .padding(.bottom, 12)
         }
-        .frame(width: 360, height: 150)
-        .shadow(color: .black.opacity(0.12), radius: 6, x: 0, y: 4)
+        .frame(width: 360, height: 200)
         .padding()
     }
+
+
     
     var categoryGrid: some View {
         LazyVGrid(
