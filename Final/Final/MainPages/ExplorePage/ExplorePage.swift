@@ -76,7 +76,7 @@ struct ExplorePage: View {
         }
     }
     
-    var filteredProducts: [Product] {
+    var filteredProdurcts: [Product] {
         store.products.filter { product in
 
             let matchesCategory: Bool = {

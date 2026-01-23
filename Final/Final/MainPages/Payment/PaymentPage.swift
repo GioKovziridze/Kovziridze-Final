@@ -19,99 +19,37 @@ struct PaymentPage: View {
     @State private var showSuccess = false
     @State private var isPaymentSuccessful = false
     
+    private let brandIndigo = Color.indigo
+    private let softBackground = Color(red: 0.98, green: 0.98, blue: 1.0)
     private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
 
     var totalAmount: Double {
         products.reduce(0) { $0 + ($1.product.price * Double($1.quantity)) }
     }
-
+    
     var body: some View {
         ZStack {
-            VStack(spacing: 24) {
-
-                // MARK: - Order Summary
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Order Summary")
-                        .font(.headline)
-
-                    ForEach(products) { item in
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(item.product.title)
-                                    .font(.subheadline)
-                                    .lineLimit(2)
-                                Text("Quantity: \(item.quantity)")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                            Spacer()
-                            Text("$\(item.product.price * Double(item.quantity), specifier: "%.2f")")
-                                .fontWeight(.semibold)
-                        }
-                    }
-
-                    Divider()
-
-                    HStack {
-                        Text("Total")
-                            .font(.headline)
-                        Spacer()
-                        Text("$\(totalAmount, specifier: "%.2f")")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                    }
+            softBackground.ignoresSafeArea()
+            
+            ScrollView {
+                VStack(spacing: 24) {
+                    
+                    orderSummaryCard
+                    
+                    paymentSection
+                    
+                    payButton
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-                // MARK: - Payment Card Section
-                if let selectedCard = paymentStore.selectedCard {
-                    cardView(selectedCard)
-                    addCardButton
-                } else {
-                    addCardPrompt
-                    showCardsButton
-                }
-
-                Spacer()
-
-                // MARK: - Pay Button
-                Button {
-                    pay()
-                   
-                } label: {
-                    if paymentStore.isProcessing {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(accentGreen)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                    } else {
-                        Text("Pay now")
-                            .font(.system(size: 16, weight: .semibold))
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(paymentStore.selectedCard == nil ? Color.gray : accentGreen)
-                            .foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                    }
-                }
-                .disabled(paymentStore.selectedCard == nil || paymentStore.isProcessing)
-                
-
+                .padding()
             }
-            .padding()
-            .navigationTitle("Payment")
             
             if isPaymentSuccessful {
-                Color.black.opacity(0.35)
-                    .ignoresSafeArea()
-                
+                Color.black.opacity(0.35).ignoresSafeArea()
                 PaymentSuccessPage(nextAction: nextAction)
                     .transition(.scale.combined(with: .opacity))
             }
-            
         }
+        .navigationBarBackButtonHidden(true)
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: isPaymentSuccessful)
         .navigationDestination(isPresented: $showAddCard) {
             AddCardPage()
@@ -120,13 +58,32 @@ struct PaymentPage: View {
             SavedCardsPage()
         }
     }
+    
+    var paymentSection: some View {
+        VStack(spacing: 14) {
+
+            Text("Payment Method")
+                .font(.headline)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if let selectedCard = paymentStore.selectedCard {
+                cardView(selectedCard)
+                addCardButton
+            } else {
+                addCardPrompt
+                showCardsButton
+            }
+        }
+    }
+
 
     // MARK: - Card Row
     func cardView(_ card: PaymentCard) -> some View {
         HStack {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text("\(card.brand) •••• \(card.last4)")
-                    .font(.system(size: 16, weight: .medium))
+                    .font(.system(size: 16, weight: .semibold))
+
                 Text("Expires \(card.expMonth)/\(card.expYear)")
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -137,11 +94,58 @@ struct PaymentPage: View {
             Button("Change") {
                 showSavedCards = true
             }
-            .foregroundColor(.blue)
+            .font(.subheadline)
+            .foregroundColor(brandIndigo)
         }
         .padding()
-        .background(Color(.systemGray6))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .background(Color.white)
+        .cornerRadius(18)
+        .shadow(color: brandIndigo.opacity(0.08), radius: 10, x: 0, y: 6)
+    }
+
+    var orderSummaryCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Order Summary")
+                .font(.headline)
+
+            ForEach(products) { item in
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(item.product.title)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .lineLimit(2)
+
+                        Text("Qty \(item.quantity)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
+
+                    Text("$\(item.product.price * Double(item.quantity), specifier: "%.2f")")
+                        .fontWeight(.semibold)
+                }
+            }
+
+            Divider()
+
+            HStack {
+                Text("Total")
+                    .font(.headline)
+
+                Spacer()
+
+                Text("$\(totalAmount, specifier: "%.2f")")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundColor(brandIndigo)
+            }
+        }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(22)
+        .shadow(color: brandIndigo.opacity(0.08), radius: 14, x: 0, y: 8)
     }
 
     // MARK: - Add Card Prompt (full-width button)
@@ -150,36 +154,33 @@ struct PaymentPage: View {
             showAddCard = true
         } label: {
             HStack {
-                Image(systemName: "plus.circle")
+                Image(systemName: "creditcard.fill")
                 Text("Add Payment Card")
-                    .fontWeight(.medium)
+                    .fontWeight(.semibold)
             }
-            .foregroundColor(.blue)
+            .foregroundColor(brandIndigo)
             .frame(maxWidth: .infinity)
             .padding()
             .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color.blue, lineWidth: 1.5)
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(brandIndigo.opacity(0.4), lineWidth: 1.5)
             )
         }
     }
+
 
     // MARK: - Add Card button
     var addCardButton: some View {
         Button {
             showAddCard = true
         } label: {
-            HStack {
-                Image(systemName: "plus.circle.fill")
-                    .foregroundColor(accentGreen)
-                Text("Add another card")
-                    .foregroundColor(accentGreen)
-                    .fontWeight(.semibold)
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(accentGreen.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            Text("Add another card")
+                .fontWeight(.semibold)
+                .foregroundColor(brandIndigo)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(brandIndigo.opacity(0.1))
+                .cornerRadius(16)
         }
     }
 
@@ -189,13 +190,45 @@ struct PaymentPage: View {
             showSavedCards = true
         } label: {
             Text("Show My Cards")
-                .font(.system(size: 16, weight: .semibold))
+                .fontWeight(.semibold)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color.gray.opacity(0.2))
-                .foregroundColor(.blue)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .background(Color.white)
+                .cornerRadius(16)
+                .shadow(color: brandIndigo.opacity(0.05), radius: 8, x: 0, y: 4)
         }
+    }
+
+    var payButton: some View {
+        Button {
+            pay()
+        } label: {
+            if paymentStore.isProcessing {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .tint(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+            } else {
+                Text("Pay $\(totalAmount, specifier: "%.2f")")
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+            }
+        }
+        .foregroundColor(.white)
+        .background(
+            LinearGradient(
+                colors: paymentStore.selectedCard == nil
+                    ? [Color.gray, Color.gray.opacity(0.7)]
+                    : [brandIndigo, brandIndigo.opacity(0.75)],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        )
+        .cornerRadius(20)
+        .shadow(color: brandIndigo.opacity(0.4), radius: 12, x: 0, y: 8)
+        .disabled(paymentStore.selectedCard == nil || paymentStore.isProcessing)
     }
 
     // MARK: - Pay Logic

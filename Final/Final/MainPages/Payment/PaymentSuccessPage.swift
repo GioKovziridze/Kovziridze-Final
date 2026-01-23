@@ -9,41 +9,69 @@ import SwiftUI
 
 struct PaymentSuccessPage: View {
     let nextAction: () -> Void
-    private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
+
+    private let primaryIndigo = Color.indigo
+    private let deepPurple = Color(red: 0.22, green: 0.18, blue: 0.35)
 
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 64))
-                .foregroundColor(accentGreen)
+        VStack(spacing: 22) {
 
-            Text("Payment Successful")
-                .font(.title2.bold())
+            // MARK: - Icon
+            ZStack {
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [primaryIndigo, deepPurple],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 88, height: 88)
+                    .shadow(color: primaryIndigo.opacity(0.35), radius: 18)
 
-            Text("Your order has been placed successfully.")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-
-            Button {
-                nextAction()
-            } label: {
-                Text("Continue")
-                    .fontWeight(.semibold)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(accentGreen)
+                Image(systemName: "checkmark")
+                    .font(.system(size: 36, weight: .bold))
                     .foregroundColor(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
             }
+
+            // MARK: - Text
+            VStack(spacing: 6) {
+                Text("Payment Complete")
+                    .font(.title3.bold())
+
+                Text("Your order is confirmed and being prepared.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+
+            // MARK: - CTA
+            Button(action: nextAction) {
+                Text("Continue")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(
+                        LinearGradient(
+                            colors: [primaryIndigo, deepPurple],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .foregroundColor(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+            }
+            .padding(.top, 8)
         }
-        .padding(24)
-        .frame(maxWidth: 320)
+        .padding(28)
+        .frame(maxWidth: 340)
         .background(
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: 24)
                 .fill(Color(.systemBackground))
         )
-        .shadow(radius: 20)
+        .shadow(color: deepPurple.opacity(0.25), radius: 30, y: 12)
+        .scaleEffect(0.96)
+        .opacity(0)
+        .animation(.spring(response: 0.45, dampingFraction: 0.75), value: true)
     }
 }
-

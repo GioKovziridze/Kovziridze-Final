@@ -28,6 +28,9 @@ struct DraggableMapView: UIViewRepresentable {
         let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(context.coordinator.mapTapped(_:)))
         mapView.addGestureRecognizer(tapGesture)
         
+        let config = MKHybridMapConfiguration(elevationStyle: .realistic)
+        mapView.preferredConfiguration = config
+        
         return mapView
     }
     
@@ -68,7 +71,7 @@ struct DraggableMapView: UIViewRepresentable {
                 view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 view?.canShowCallout = false
                 view?.isDraggable = true
-                (view as? MKPinAnnotationView)?.pinTintColor = parent.accentGreen
+                (view as? MKPinAnnotationView)?.pinTintColor = .red
             } else {
                 view?.annotation = annotation
             }

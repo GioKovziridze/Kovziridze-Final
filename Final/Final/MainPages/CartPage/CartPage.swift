@@ -14,6 +14,10 @@ struct CartPage: View {
     @ObservedObject private var productStore = ProductStore.shared
 
     private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
+    private let brandIndigo = Color.indigo
+    private let softBackground = Color(red: 0.98, green: 0.98, blue: 1.0)
+    private let destructiveRed = Color.red.opacity(0.85)
+
 
     var body: some View {
         NavigationStack {
@@ -34,8 +38,8 @@ struct CartPage: View {
                 }
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle("Cart")
-            .navigationBarTitleDisplayMode(.inline)
+//            .navigationTitle("Cart")
+//            .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 reloadCart()
             }
@@ -54,24 +58,28 @@ struct CartPage: View {
 private extension CartPage {
 
     func cartItemRow(_ item: CartDisplayItem) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 14) {
 
             Image(item.product.image)
                 .resizable()
-                .scaledToFit()
-                .frame(width: 70, height: 70)
-                .background(Color.white)
-                .cornerRadius(12)
                 .scaledToFill()
+                .frame(width: 68, height: 68)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14)
+                        .stroke(brandIndigo.opacity(0.15), lineWidth: 1)
+                )
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(item.product.title)
                     .font(.subheadline)
+                    .fontWeight(.semibold)
                     .lineLimit(2)
 
                 Text("$\(item.product.price, specifier: "%.2f")")
-                    .font(.headline)
-                    .foregroundColor(accentGreen)
+                    .font(.footnote)
+                    .fontWeight(.bold)
+                    .foregroundColor(brandIndigo)
 
                 viewModel.quantityControls(item)
             }
@@ -82,32 +90,43 @@ private extension CartPage {
                 viewModel.removeItem(item)
             } label: {
                 Image(systemName: "trash")
-                    .foregroundColor(.red)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(destructiveRed)
             }
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.05), radius: 8)
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 18)
+                .fill(Color.white)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(brandIndigo.opacity(0.08), lineWidth: 1)
+        )
+        .shadow(color: brandIndigo.opacity(0.06), radius: 10, x: 0, y: 6)
     }
+
 }
 
 private extension CartPage {
-
+    
     var checkoutSection: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 18) {
+            
             HStack {
                 Text("Total")
                     .font(.headline)
-
+                    .foregroundColor(.secondary)
+                
                 Spacer()
-
+                
                 Text("$\(viewModel.totalPrice, specifier: "%.2f")")
                     .font(.title3)
-                    .foregroundColor(accentGreen)
+                    .fontWeight(.bold)
+                    .foregroundColor(brandIndigo)
             }
-
-            NavigationLink{
+            
+            NavigationLink {
                 CheckoutContainer(cartItems: viewModel.items)
             } label: {
                 Text("Buy Now")
@@ -115,82 +134,77 @@ private extension CartPage {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(accentGreen)
+                    .background(
+                        LinearGradient(
+                            colors: [brandIndigo, brandIndigo.opacity(0.75)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
                     .cornerRadius(16)
+                    .shadow(color: brandIndigo.opacity(0.35), radius: 10, x: 0, y: 6)
             }
         }
-        .padding()
+        .padding(18)
         .background(Color.white)
         .cornerRadius(24)
-        .shadow(color: .black.opacity(0.1), radius: 12)
+        .shadow(color: brandIndigo.opacity(0.08), radius: 14, x: 0, y: 8)
     }
     
+    
     var emptyState: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 22) {
+            
             Image(systemName: "cart.fill")
-                .font(.system(size: 60))
+                .font(.system(size: 56))
                 .foregroundStyle(
                     LinearGradient(
-                        colors: [accentGreen, accentGreen.opacity(0.6)],
+                        colors: [brandIndigo, brandIndigo.opacity(0.6)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
-                .scaleEffect(1.1)
                 .padding()
                 .background(
                     Circle()
-                        .fill(accentGreen.opacity(0.1))
+                        .fill(brandIndigo.opacity(0.1))
                         .frame(width: 120, height: 120)
                 )
-                .shadow(color: accentGreen.opacity(0.3), radius: 10, x: 0, y: 5)
-                .animation(
-                    .easeInOut(duration: 1.2)
-                    .repeatForever(autoreverses: true),
-                    value: UUID()
-                )
+                .shadow(color: brandIndigo.opacity(0.25), radius: 10, x: 0, y: 5)
             
             Text("Your Cart is Empty")
                 .font(.title2)
                 .fontWeight(.semibold)
-                .foregroundColor(.primary)
             
-            Text("Add products to start shopping and discover amazing deals!")
+            Text("Add products to start shopping and discover something you’ll love.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
             
-            Button(action: {
+            Button {
                 TabBarController.shared?.switchToExploreTab()
-            }) {
+            } label: {
                 Text("Start Shopping")
                     .fontWeight(.bold)
                     .foregroundColor(.white)
-                    .padding()
                     .frame(maxWidth: .infinity)
+                    .padding()
                     .background(
                         LinearGradient(
-                            colors: [accentGreen, accentGreen.opacity(0.7)],
+                            colors: [brandIndigo, brandIndigo.opacity(0.75)],
                             startPoint: .leading,
                             endPoint: .trailing
                         )
                     )
-                    .cornerRadius(12)
-                    .shadow(color: accentGreen.opacity(0.4), radius: 8, x: 0, y: 4)
+                    .cornerRadius(14)
+                    .shadow(color: brandIndigo.opacity(0.4), radius: 8, x: 0, y: 4)
             }
             .padding(.horizontal, 40)
         }
         .padding()
         .frame(maxHeight: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 24)
-                .fill(Color.white)
-                .shadow(color: Color.black.opacity(0.05), radius: 12, x: 0, y: 6)
-        )
-        .padding(.horizontal, 16)
-        .padding(.bottom, 30)
+        .background(softBackground)
     }
-
 }
 

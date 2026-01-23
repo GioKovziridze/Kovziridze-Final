@@ -20,12 +20,13 @@ struct CheckoutContainer: View {
     
     let cartItems: [CartDisplayItem]
     private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
-
+    private let softBackground = Color(red: 0.98, green: 0.98, blue: 1.0)
+    
     var body: some View {
         VStack {
             stepIndicator
             
-            Divider().padding(.vertical, 8)
+            Divider().padding(.vertical, 4)
             
             Group {
                 switch currentStep {
@@ -47,15 +48,18 @@ struct CheckoutContainer: View {
             Spacer()
         }
         .padding()
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button("") {
+                Button {
                     goToPreviousStep()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .background(softBackground.ignoresSafeArea())
 
         
     }
@@ -70,14 +74,14 @@ struct CheckoutContainer: View {
             stepLine()
             stepCircle(step: .tracking, title: "Tracking")
         }
-        .padding(.bottom)
+//        .padding(.bottom)
     }
     
     private func stepCircle(step: CheckoutStep, title: String) -> some View {
         VStack {
             ZStack {
                 Circle()
-                    .fill(currentStep == step || currentStep.rawValue > step.rawValue ? accentGreen : Color.gray.opacity(0.3))
+                    .fill(currentStep == step || currentStep.rawValue > step.rawValue ? Color.indigo : Color.gray.opacity(0.3))
                     .frame(width: 28, height: 28)
                 if currentStep.rawValue > step.rawValue {
                     Image(systemName: "checkmark")

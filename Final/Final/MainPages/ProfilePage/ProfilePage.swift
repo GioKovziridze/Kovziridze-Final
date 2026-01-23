@@ -78,9 +78,6 @@ struct ProfilePage: View {
                 .padding()
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle("Profile")
-            .navigationBarTitleDisplayMode(.inline)
-
         }
     }
 }

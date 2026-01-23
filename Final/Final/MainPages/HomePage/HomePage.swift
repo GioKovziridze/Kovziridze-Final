@@ -15,6 +15,9 @@ struct HomePage: View {
 
     var body: some View {
         ZStack {
+            Color(red: 0.99, green: 0.98, blue: 0.96)
+                .ignoresSafeArea()
+            
             NavigationStack {
                 ScrollView {
                     VStack(spacing: 20) {
@@ -60,6 +63,7 @@ struct HomePage: View {
             .toolbar(.hidden, for: .navigationBar)
             
         }
+        
     }
     
     

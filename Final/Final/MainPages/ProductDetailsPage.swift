@@ -85,9 +85,6 @@ struct ProductDetailsPage: View {
             addToCartBar
             
         }
-        
-//        .navigationTitle("Details")
-//        .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.hidden, for: .navigationBar)
         
     }

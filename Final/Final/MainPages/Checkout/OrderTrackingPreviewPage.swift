@@ -59,8 +59,10 @@ struct OrderTrackingPreviewPage: View {
                 Button("Done") {
                     dismiss()
                 }
+                .foregroundColor(.black)
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
     
     // MARK: - Timeline Step
