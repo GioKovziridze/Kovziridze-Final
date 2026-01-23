@@ -42,13 +42,13 @@ struct OrderTrackingPreviewPage: View {
             VStack(spacing: 8) {
                 Text("Estimated Delivery")
                     .font(.headline)
-                Text("Jan 20, 2026")
+                Text("Jan 31, 2026")
                     .font(.title2)
                     .fontWeight(.bold)
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .background(accentGreen.opacity(0.1))
+            .background(Color.indigo.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 16))
             
             Spacer()
@@ -70,7 +70,7 @@ struct OrderTrackingPreviewPage: View {
         HStack(alignment: .top) {
             ZStack {
                 Circle()
-                    .fill(currentStep.rawValue >= step.rawValue ? accentGreen : Color.gray.opacity(0.3))
+                    .fill(currentStep.rawValue >= step.rawValue ? Color.indigo : Color.gray.opacity(0.3))
                     .frame(width: 24, height: 24)
                 
                 if currentStep.rawValue > step.rawValue {

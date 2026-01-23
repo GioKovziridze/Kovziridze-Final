@@ -9,47 +9,91 @@ import SwiftUI
 
 struct SupportChatView: View {
     
-    @StateObject private var vm = SupportChatViewModel()
+    @StateObject private var viewModel = SupportChatViewModel()
+    @Environment(\.dismiss) private var dismiss
     
+    private let userGradient = LinearGradient(
+        colors: [Color.indigo, Color(red: 0.22, green: 0.18, blue: 0.35)],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    private let assistantBubble = Color(.secondarySystemBackground)
     var body: some View {
-        VStack {
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(vm.messages) { msg in
-                        HStack {
-                            if msg.role == .user { Spacer() }
-                            
-                            Text(msg.text)
-                                .padding()
-                                .background(
-                                    msg.role == .user
-                                    ? Color.blue
-                                    : Color.gray.opacity(0.2)
-                                )
-                                .foregroundColor(
-                                    msg.role == .user ? .white : .black
-                                )
-                                .cornerRadius(14)
-                                .frame(maxWidth: 280, alignment: .leading)
-                            
-                            if msg.role == .assistant { Spacer() }
+        VStack(spacing: 0) {
+            
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(spacing: 14) {
+                        ForEach(viewModel.messages) { message in
+                            ChatBubble(message: message)
+                                .id(message.id)
+                        }
+                        
+                        if viewModel.isLoading {
+                            typingIndicator
                         }
                     }
                 }
-                .padding()
+                .onChange(of: viewModel.messages.count) { _ in
+                    withAnimation {
+                        proxy.scrollTo(viewModel.messages.last?.id, anchor: .bottom)
+                    }
+                }
             }
             
-            HStack {
-                TextField("Ask support…", text: $vm.input)
-                    .textFieldStyle(.roundedBorder)
-                
-                Button("Send") {
-                    vm.send()
-                }
-                .disabled(vm.input.isEmpty || vm.isLoading)
-            }
-            .padding()
+            inputBar
         }
-        .navigationTitle("AI Support")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .background(Color(.systemGroupedBackground))
+    }
+    
+    private var inputBar: some View {
+        HStack(spacing: 12) {
+            TextField("Ask support…", text: $viewModel.input)
+                .padding(12)
+                .background(Color(.systemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+
+            Button {
+                viewModel.send()
+            } label: {
+                Image(systemName: "paperplane.fill")
+                    .foregroundColor(.white)
+                    .padding(12)
+                    .background(userGradient)
+                    .clipShape(Circle())
+            }
+            .disabled(viewModel.input.isEmpty || viewModel.isLoading)
+        }
+        .padding()
+        .background(
+            Color(.systemGroupedBackground)
+                .ignoresSafeArea(edges: .bottom)
+        )
+    }
+    private var typingIndicator: some View {
+        HStack {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(.secondarySystemBackground))
+                .frame(width: 60, height: 28)
+                .overlay(
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .scaleEffect(0.7)
+                )
+            Spacer()
+        }
+        .padding(.leading)
     }
 }

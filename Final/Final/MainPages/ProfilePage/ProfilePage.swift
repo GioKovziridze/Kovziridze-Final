@@ -12,7 +12,10 @@ struct ProfilePage: View {
     @ObservedObject private var userStore = UserStore.shared
 
     private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
-
+    private let indigo = Color.indigo
+    private let deepPurple = Color(red: 0.22, green: 0.18, blue: 0.35)
+    private let cardBackground = Color(.secondarySystemBackground)
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -87,29 +90,42 @@ private extension ProfilePage {
     var profileHeader: some View {
         HStack(spacing: 16) {
             Circle()
-                .fill(accentGreen.opacity(0.15))
+                .fill(
+                    LinearGradient(
+                        colors: [indigo, deepPurple],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .frame(width: 72, height: 72)
                 .overlay(
                     Image(systemName: "person.fill")
-                        .font(.system(size: 28))
-                        .foregroundColor(accentGreen)
+                        .font(.system(size: 28, weight: .semibold))
+                        .foregroundColor(.white)
                 )
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(userStore.currentUser?.username ?? "Guest User")
                     .font(.headline)
+                    .foregroundColor(.white)
 
                 Text(userStore.currentUser?.email ?? "guest@example.com")
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.white.opacity(0.85))
             }
 
             Spacer()
         }
         .padding()
-        .background(Color.white)
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
+        .background(
+            LinearGradient(
+                colors: [indigo, deepPurple],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .cornerRadius(20)
+        .shadow(color: deepPurple.opacity(0.35), radius: 20, y: 10)
     }
 }
 private extension ProfilePage {
@@ -120,9 +136,12 @@ private extension ProfilePage {
         VStack(spacing: 0) {
             content()
         }
-        .background(Color.white)
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 4)
+        .background(cardBackground)
+        .cornerRadius(18)
+        .overlay(
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(Color.black.opacity(0.04))
+        )
     }
 }
 private extension ProfilePage {
@@ -135,19 +154,19 @@ private extension ProfilePage {
         NavigationLink {
             destination
         } label: {
-            HStack(spacing: 12) {
+            HStack(spacing: 14) {
                 Image(systemName: systemImage)
-                    .foregroundColor(accentGreen)
+                    .foregroundColor(indigo)
                     .frame(width: 24)
 
                 Text(title)
-                    .foregroundColor(.primary)
+                    .font(.body)
 
                 Spacer()
 
                 Image(systemName: "chevron.right")
-                    .foregroundColor(.gray)
-                    .font(.system(size: 14))
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.secondary)
             }
             .padding()
         }
@@ -158,17 +177,16 @@ private extension ProfilePage {
 private extension ProfilePage {
 
     var logoutButton: some View {
-        Button {
+        Button(role: .destructive) {
             logOut()
         } label: {
             Text("Log Out")
-                .foregroundColor(.red)
+                .font(.headline)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color.white)
+                .background(cardBackground)
                 .cornerRadius(16)
         }
-        .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 4)
     }
     
     func logOut() {

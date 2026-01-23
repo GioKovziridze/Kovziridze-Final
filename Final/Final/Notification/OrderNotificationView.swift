@@ -15,7 +15,7 @@ struct OrderNotificationView: View {
         HStack(spacing: 16) {
             ZStack {
                 Circle()
-                    .fill(Color.green.opacity(0.2))
+                    .fill(Color.indigo.opacity(0.2))
                     .frame(width: 40, height: 40)
                 Image(systemName: "bag.fill")
                     .foregroundColor(Color.green)
@@ -43,8 +43,8 @@ struct OrderNotificationView: View {
                     .bold()
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
-                    .background(Color.green.opacity(0.1))
-                    .foregroundColor(.green)
+                    .background(Color.indigo.opacity(0.1))
+                    .foregroundColor(.indigo)
                     .clipShape(Capsule())
             }
         }
