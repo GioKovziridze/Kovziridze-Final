@@ -10,7 +10,6 @@ import SwiftUI
 struct SupportChatView: View {
     
     @StateObject private var viewModel = SupportChatViewModel()
-    @Environment(\.dismiss) private var dismiss
     
     private let userGradient = LinearGradient(
         colors: [Color.indigo, Color(red: 0.22, green: 0.18, blue: 0.35)],
@@ -44,18 +43,6 @@ struct SupportChatView: View {
             
             inputBar
         }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
-                }
-            }
-        }
-        .navigationBarBackButtonHidden(true)
-        .background(Color(.systemGroupedBackground))
     }
     
     private var inputBar: some View {

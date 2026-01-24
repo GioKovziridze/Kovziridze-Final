@@ -95,12 +95,12 @@ struct PaymentPage: View {
                 showSavedCards = true
             }
             .font(.subheadline)
-            .foregroundColor(brandIndigo)
+            .foregroundColor(Color.indigo)
         }
         .padding()
         .background(Color.white)
         .cornerRadius(18)
-        .shadow(color: brandIndigo.opacity(0.08), radius: 10, x: 0, y: 6)
+        .shadow(color: Color.indigo.opacity(0.08), radius: 10, x: 0, y: 6)
     }
 
     var orderSummaryCard: some View {
@@ -139,13 +139,13 @@ struct PaymentPage: View {
                 Text("$\(totalAmount, specifier: "%.2f")")
                     .font(.title3)
                     .fontWeight(.bold)
-                    .foregroundColor(brandIndigo)
+                    .foregroundColor(Color.indigo)
             }
         }
         .padding()
         .background(Color.white)
         .cornerRadius(22)
-        .shadow(color: brandIndigo.opacity(0.08), radius: 14, x: 0, y: 8)
+        .shadow(color: Color.indigo.opacity(0.08), radius: 14, x: 0, y: 8)
     }
 
     // MARK: - Add Card Prompt (full-width button)
@@ -176,10 +176,10 @@ struct PaymentPage: View {
         } label: {
             Text("Add another card")
                 .fontWeight(.semibold)
-                .foregroundColor(brandIndigo)
+                .foregroundColor(Color.indigo)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(brandIndigo.opacity(0.1))
+                .background(Color.indigo.opacity(0.1))
                 .cornerRadius(16)
         }
     }
@@ -195,7 +195,7 @@ struct PaymentPage: View {
                 .padding()
                 .background(Color.white)
                 .cornerRadius(16)
-                .shadow(color: brandIndigo.opacity(0.05), radius: 8, x: 0, y: 4)
+                .shadow(color: Color.indigo.opacity(0.05), radius: 8, x: 0, y: 4)
         }
     }
 
@@ -221,13 +221,13 @@ struct PaymentPage: View {
             LinearGradient(
                 colors: paymentStore.selectedCard == nil
                     ? [Color.gray, Color.gray.opacity(0.7)]
-                    : [brandIndigo, brandIndigo.opacity(0.75)],
+                    : [Color.indigo, Color.indigo.opacity(0.75)],
                 startPoint: .leading,
                 endPoint: .trailing
             )
         )
         .cornerRadius(20)
-        .shadow(color: brandIndigo.opacity(0.4), radius: 12, x: 0, y: 8)
+        .shadow(color: Color.indigo.opacity(0.4), radius: 12, x: 0, y: 8)
         .disabled(paymentStore.selectedCard == nil || paymentStore.isProcessing)
     }
 
@@ -256,5 +256,4 @@ struct PaymentPage: View {
             isPaymentSuccessful = true
         }
     }
-
 }

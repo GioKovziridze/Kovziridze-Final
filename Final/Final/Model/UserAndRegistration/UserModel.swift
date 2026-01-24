@@ -17,7 +17,7 @@ struct UserModel: Identifiable, Codable {
     var orders: [Order] = []
     
     var displayCity: String {
-        city.isEmpty ? "Tbilisi" : city
+        city.isEmpty ? "New York" : city
     }
 }
 

@@ -31,22 +31,26 @@ final class TabBarController: UITabBarController {
         let exploreVC = UIHostingController(rootView: ExplorePage())
         exploreVC.tabBarItem = UITabBarItem(title: "Explore", image: UIImage(systemName: "magnifyingglass"), tag: 1)
         
+        let supportVC = UIHostingController(rootView: SupportChatView())
+        supportVC.tabBarItem = UITabBarItem(title: "Support", image: UIImage(systemName: "message.fill"), tag: 2)
+        
         let cartVC = UIHostingController(rootView: CartPage())
-        cartVC.tabBarItem = UITabBarItem(title: "Cart", image: UIImage(systemName: "cart.fill"), tag: 2)
+        cartVC.tabBarItem = UITabBarItem(title: "Cart", image: UIImage(systemName: "cart.fill"), tag: 3)
         
         let profileVC = UIHostingController(rootView: ProfilePage())
-        profileVC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 3)
+        profileVC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 4)
         
         viewControllers = [
             UINavigationController(rootViewController: homeVC),
             UINavigationController(rootViewController: exploreVC),
+            UINavigationController(rootViewController: supportVC),
             UINavigationController(rootViewController: cartVC),
             UINavigationController(rootViewController: profileVC)
         ]
     }
     
     func switchToProfileTab() {
-        self.selectedIndex = 3
+        self.selectedIndex = 4
     }
     func switchToExploreTab() {
         self.selectedIndex = 1
@@ -56,16 +60,18 @@ final class TabBarController: UITabBarController {
         tabBar.backgroundImage = UIImage()
         tabBar.shadowImage = UIImage()
         tabBar.isTranslucent = true
-        tabBar.tintColor = UIColor(red: 0.5, green: 1.0, blue: 0.5, alpha: 1)
-        tabBar.unselectedItemTintColor = .white
+        tabBar.tintColor = UIColor.systemIndigo
+        tabBar.unselectedItemTintColor = UIColor.systemIndigo.withAlphaComponent(0.45)
 
         backgroundView = UIView(frame: .zero)
-        backgroundView.backgroundColor = UIColor(.gray.opacity(0.6))
+        backgroundView.backgroundColor = UIColor(
+            red: 0.97, green: 0.97, blue: 0.99, alpha: 0.9
+        )
         backgroundView.layer.cornerRadius = customTabBarHeight / 2
-        backgroundView.layer.shadowColor = UIColor.black.cgColor
-        backgroundView.layer.shadowOpacity = 0.15
-        backgroundView.layer.shadowOffset = CGSize(width: 0, height: 5)
-        backgroundView.layer.shadowRadius = 10
+        backgroundView.layer.shadowColor = UIColor.systemIndigo.cgColor
+        backgroundView.layer.shadowOpacity = 0.25
+        backgroundView.layer.shadowOffset = CGSize(width: 0, height: 8)
+        backgroundView.layer.shadowRadius = 18
         view.addSubview(backgroundView)
         view.bringSubviewToFront(tabBar)
     }
@@ -73,7 +79,7 @@ final class TabBarController: UITabBarController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let width = tabBar.frame.width - 40
+        let width = tabBar.frame.width - 25
         let height = customTabBarHeight
         let x: CGFloat = 20
         let y = view.frame.height - height - floatingMargin

@@ -17,6 +17,7 @@ enum CheckoutStep: Int {
 struct CheckoutContainer: View {
     @State private var currentStep: CheckoutStep = .address
     @State private var selectedAddress: Address?
+    @Environment(\.dismiss) private var dismiss
     
     let cartItems: [CartDisplayItem]
     private let accentGreen = Color(red: 0.45, green: 0.78, blue: 0.62)
@@ -51,7 +52,11 @@ struct CheckoutContainer: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button {
-                    goToPreviousStep()
+                    if currentStep == .address {
+                        dismiss()
+                    } else {
+                        goToPreviousStep()
+                    }
                 } label: {
                     Image(systemName: "chevron.left")
                         .foregroundColor(.black)

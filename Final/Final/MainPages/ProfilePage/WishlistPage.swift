@@ -10,6 +10,7 @@ import SwiftUI
 struct WishlistPage: View {
     @ObservedObject private var userStore = UserStore.shared
     @ObservedObject private var productStore = ProductStore.shared
+    @Environment(\.dismiss) private var dismiss
     
     private let cardWidth: CGFloat = 160
     private let cardHeight: CGFloat = 250
@@ -67,6 +68,18 @@ struct WishlistPage: View {
             }
         }
         .background(Color(.systemGray6).ignoresSafeArea())
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .background(Color(.systemGroupedBackground))
     }
 }
 

@@ -16,7 +16,7 @@ struct SearchBar: View {
                 .foregroundColor(.white.opacity(0.7))
                 .font(.system(size: 18, weight: .semibold))
             
-            TextField("Search products", text: $text)
+            TextField("",text: $text,prompt: Text("Search products").foregroundColor(.white.opacity(0.7)))
                 .foregroundColor(.white)
                 .font(.system(size: 15, weight: .medium))
                 .autocapitalization(.none)

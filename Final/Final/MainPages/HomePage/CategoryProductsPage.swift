@@ -10,7 +10,7 @@ import SwiftUI
 
 struct CategoryProductsPage: View {
     let category: ProductCategory
-
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject private var store = ProductStore.shared
 
     var products: [Product] {
@@ -34,7 +34,19 @@ struct CategoryProductsPage: View {
             .padding()
         }
         .navigationTitle(category.displayName)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.indigo)
+                }
+            }
+        }
     }
 }
 

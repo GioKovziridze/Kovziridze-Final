@@ -138,12 +138,7 @@ final class LoginVC: UIViewController {
     private func setupLoginButton() {
         loginButton.setTitle("Login", for: .normal)
         loginButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-        loginButton.backgroundColor = UIColor(
-            red: 0.78,
-            green: 0.93,
-            blue: 0.35,
-            alpha: 1
-        )
+        loginButton.backgroundColor = UIColor(red: 0.29, green: 0.0, blue: 0.51, alpha: 1)
         loginButton.layer.cornerRadius = 28
         loginButton.heightAnchor.constraint(equalToConstant: 56).isActive = true
         loginButton.setTitleColor(.black, for: .normal)

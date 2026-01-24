@@ -65,14 +65,6 @@ struct ProfilePage: View {
                             systemImage: "gearshape",
                             destination: SettingsPage()
                         )
-
-                        Divider()
-
-                        profileRow(
-                            title: "Help & Support",
-                            systemImage: "questionmark.circle",
-                            destination: SupportChatView()
-                        )
                     }
 
                     // MARK: - Logout

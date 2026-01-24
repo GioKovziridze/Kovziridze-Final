@@ -28,7 +28,7 @@ struct HomePage: View {
                             .font(.custom("Poppins-Medium", size: 26))
                             .foregroundColor(.black)
                             .padding(.trailing, 230)
-                            .padding(4)
+                            .padding(.bottom, 4)
                         
                         categoryGrid
                         

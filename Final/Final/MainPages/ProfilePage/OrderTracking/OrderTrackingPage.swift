@@ -11,6 +11,7 @@ import MapKit
 struct OrderTrackingPage: View {
     let order: Order
 
+    @Environment(\.dismiss) private var dismiss 
     @ObservedObject private var userStore = UserStore.shared
     @State private var courierCoordinate: CLLocationCoordinate2D
     @State private var route: MKRoute?
@@ -27,30 +28,77 @@ struct OrderTrackingPage: View {
             )
         )
     }
-
-
+    
     var body: some View {
-        VStack {
-            OrderRouteMapView(
-                destination: destinationCoordinate,
-                courier: courierCoordinate,
-                route: route
+        ZStack {
+            // Background gradient
+            LinearGradient(
+                colors: [Color.indigo.opacity(0.9), Color(red: 0.18, green: 0.16, blue: 0.28)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
             )
-            .frame(height: 420)
-
-            Text("Status: \(currentStatus)")
-                .font(.headline)
+            .ignoresSafeArea()
+            
+            VStack(spacing: 20) {
+                // MARK: - Map Card
+                ZStack {
+                    RoundedRectangle(cornerRadius: 28)
+                        .fill(Color.indigo.opacity(0.1))
+                        .shadow(color: Color.black.opacity(0.35), radius: 20, x: 0, y: 10)
+                    
+                    OrderRouteMapView(
+                        destination: destinationCoordinate,
+                        courier: courierCoordinate,
+                        route: route
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 28))
+                    .padding(6)
+                }
+                .frame(height: 420)
+                .padding(.horizontal)
+                
+                // MARK: - Status Card
+                VStack(spacing: 12) {
+                    Text("Order Status")
+                        .font(.title3.bold())
+                        .foregroundColor(.white)
+                    
+                    Text(currentStatus)
+                        .font(.title2.weight(.semibold))
+                        .foregroundColor(statusColor)
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 24)
+                        .background(
+                            Capsule()
+                                .fill(statusColor.opacity(0.2))
+                        )
+                    
+                    HStack(spacing: 12) {
+                        Image(systemName: "mappin.and.ellipse")
+                            .foregroundColor(.white.opacity(0.8))
+                        Text("Destination: \(order.address.addressLine.isEmpty ? "Your Address" : order.address.addressLine)")
+                            .foregroundColor(.white.opacity(0.8))
+                            .font(.subheadline)
+                    }
+                }
+                .frame(maxWidth: .infinity)
                 .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(Color.indigo.opacity(0.4)))
+            }
         }
-        .navigationTitle("Tracking Order")
-        .onAppear {
-            fetchRoute()
+        .padding()
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Done") {
+                    dismiss()
+                }
+                .foregroundColor(.black)
+            }
         }
-        .onChange(of: route) { _ in
-            startRouteMovement()
-        }
+        .navigationBarBackButtonHidden(true)
     }
-        
 
     private var destinationCoordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(
@@ -61,6 +109,14 @@ struct OrderTrackingPage: View {
     
     private var currentStatus: String {
         userStore.currentUser?.orders.first(where: { $0.id == order.id })?.status ?? "Pending"
+    }
+    
+    private var statusColor: Color {
+        switch currentStatus {
+        case "Delivered": return .green
+        case "Nearby": return .yellow
+        default: return .orange
+        }
     }
 }
 

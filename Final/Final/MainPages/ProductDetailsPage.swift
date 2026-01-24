@@ -60,7 +60,7 @@ struct ProductDetailsPage: View {
                         .padding(.vertical, 6)
                         .background(
                             Capsule()
-                                .fill(Color(red: 0.55, green: 1.0, blue: 0.6).opacity(0.4))
+                                .fill(Color.indigo.opacity(0.15))
                         )
                         .padding(.horizontal)
                     
@@ -86,6 +86,7 @@ struct ProductDetailsPage: View {
             
         }
         .toolbarBackground(.hidden, for: .navigationBar)
+        
         
     }
 
@@ -153,7 +154,7 @@ struct ProductDetailsPage: View {
                             .padding(.vertical, 14)
                             .background(
                                 Capsule()
-                                    .fill(Color(red: 0.55, green: 1.0, blue: 0.6))
+                                    .fill(Color.indigo.opacity(0.15))
                             )
                     }
                     .buttonStyle(.plain)

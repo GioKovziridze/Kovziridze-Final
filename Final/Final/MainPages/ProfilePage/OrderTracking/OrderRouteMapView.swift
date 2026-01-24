@@ -20,7 +20,7 @@ struct OrderRouteMapView: UIViewRepresentable {
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = false
         mapView.pointOfInterestFilter = .excludingAll
-        
+    
         return mapView
     }
 

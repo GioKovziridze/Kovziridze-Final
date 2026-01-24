@@ -17,7 +17,8 @@ final class RegistrationVC: UIViewController {
     // MARK: - Data
     private let cities = [
         "Tbilisi", "Batumi", "Kutaisi", "Rustavi",
-        "New York", "Tel-Aviv", "Milan", "Berlin", "Beijing", "Rio"
+        "New York", "Tel-Aviv", "Milan", "Berlin", "Beijing", "Rio",
+        "Paris", "Amsterdam", "Madrid", 
     ]
 
     private let cityPicker = UIPickerView()
@@ -65,12 +66,7 @@ final class RegistrationVC: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         button.setTitleColor(.black, for: .normal)
 
-        button.backgroundColor = UIColor(
-            red: 0.78,
-            green: 0.93,
-            blue: 0.35,
-            alpha: 1
-        )
+        button.backgroundColor = UIColor(red: 0.29, green: 0.0, blue: 0.51, alpha: 1)
         button.layer.cornerRadius = 28
         button.heightAnchor.constraint(equalToConstant: 56).isActive = true
         return button

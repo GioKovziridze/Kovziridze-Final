@@ -9,14 +9,37 @@
 import SwiftUI
 import MapKit
 
+let cityCoordinates: [String: CLLocationCoordinate2D] = [
+    "Tbilisi": CLLocationCoordinate2D(latitude: 41.7151, longitude: 44.8271),
+    "Batumi": CLLocationCoordinate2D(latitude: 41.6168, longitude: 41.6367),
+    "Kutaisi": CLLocationCoordinate2D(latitude: 42.2679, longitude: 42.6946),
+    "Rustavi": CLLocationCoordinate2D(latitude: 41.5495, longitude: 45.0060),
+
+    "New York": CLLocationCoordinate2D(latitude: 40.7128, longitude: -74.0060),
+    "Tel-Aviv": CLLocationCoordinate2D(latitude: 32.0853, longitude: 34.7818),
+    "Milan": CLLocationCoordinate2D(latitude: 45.4642, longitude: 9.1900),
+    "Berlin": CLLocationCoordinate2D(latitude: 52.5200, longitude: 13.4050),
+    "Beijing": CLLocationCoordinate2D(latitude: 39.9042, longitude: 116.4074),
+    "Rio": CLLocationCoordinate2D(latitude: -22.9068, longitude: -43.1729),
+    "Paris": CLLocationCoordinate2D(latitude: 48.8566, longitude: 2.3522),
+    "Amsterdam": CLLocationCoordinate2D(latitude: 52.3676, longitude: 4.9041),
+    "Madrid": CLLocationCoordinate2D(latitude: 40.4168, longitude: -3.7038)
+]
+
 struct DraggableMapView: UIViewRepresentable {
     @Binding var selectedAddress: Address?
+    let city: String
     
-    // Default region: Tbilisi
-    var initialRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 41.7151, longitude: 44.8271),
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+    // Default region: New York
+    var initialRegion: MKCoordinateRegion {
+    let coordinate = cityCoordinates[city]
+    ?? cityCoordinates["New York"]!
+
+    return MKCoordinateRegion(
+    center: coordinate,
+    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     )
+    }
     
     private let accentGreen = UIColor(red: 0.45, green: 0.78, blue: 0.62, alpha: 1.0)
     

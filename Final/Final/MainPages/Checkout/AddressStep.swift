@@ -33,7 +33,7 @@ struct AddressStep: View {
 
             // MARK: - Map Card
             VStack(spacing: 12) {
-                DraggableMapView(selectedAddress: $selectedAddress)
+                DraggableMapView(selectedAddress: $selectedAddress, city: UserStore.shared.currentUser?.displayCity ?? "New York")
                     .frame(height: 280)
                     .clipShape(RoundedRectangle(cornerRadius: 18))
             }

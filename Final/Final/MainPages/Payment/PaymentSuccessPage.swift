@@ -9,7 +9,8 @@ import SwiftUI
 
 struct PaymentSuccessPage: View {
     let nextAction: () -> Void
-
+    @State private var show = false
+    
     private let primaryIndigo = Color.indigo
     private let deepPurple = Color(red: 0.22, green: 0.18, blue: 0.35)
 
@@ -70,8 +71,12 @@ struct PaymentSuccessPage: View {
                 .fill(Color(.systemBackground))
         )
         .shadow(color: deepPurple.opacity(0.25), radius: 30, y: 12)
-        .scaleEffect(0.96)
-        .opacity(0)
-        .animation(.spring(response: 0.45, dampingFraction: 0.75), value: true)
+        .scaleEffect(show ? 1 : 0.9)
+        .opacity(show ? 1 : 0)
+        .onAppear {
+            withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+                show = true
+            }
+        }
     }
 }
