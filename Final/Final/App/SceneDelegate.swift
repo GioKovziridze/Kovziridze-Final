@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -28,21 +29,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         
         if hasSeenOnboarding {
-            let authContainer = AuthContainerVC()
-            navController.setViewControllers([authContainer], animated: false)
-        } else {
             let onboardingVC = OnboardingPageVC(
                 transitionStyle: .scroll,
                 navigationOrientation: .horizontal
             )
             navController.setViewControllers([onboardingVC], animated: false)
+        } else {
+            let authContainer = AuthContainerVC()
+            navController.setViewControllers([authContainer], animated: false)
         }
         
         window.rootViewController = navController
         window.makeKeyAndVisible()
         self.window = window
         
+        UNUserNotificationCenter.current().requestAuthorization(
+            options: [.alert, .sound, .badge]
+        ) { granted, error in
+            if granted {
+                print("Notifications allowed")
+            } else {
+                print("Notifications denied")
+            }
+        }
     }
+    
+    
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

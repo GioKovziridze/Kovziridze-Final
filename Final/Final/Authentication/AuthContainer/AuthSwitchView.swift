@@ -42,13 +42,8 @@ final class AuthSwitchView: UIView {
         backgroundView.layer.cornerRadius = 32
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
 
-        // MARK: - Selector (light green capsule)
-        selectorView.backgroundColor = UIColor(
-            red: 0.78,
-            green: 0.93,
-            blue: 0.35,
-            alpha: 1
-        )
+        // MARK: - Selector
+        selectorView.backgroundColor = .systemIndigo
         selectorView.layer.cornerRadius = 28
         selectorView.translatesAutoresizingMaskIntoConstraints = false
 

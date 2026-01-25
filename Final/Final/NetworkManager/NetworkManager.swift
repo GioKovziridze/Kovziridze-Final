@@ -22,6 +22,11 @@ final class NetworkManager: NetworkManagerProtocol {
     private init() {}
     
     private let db = Firestore.firestore()
+    private let productURL = "https://fakestoreapi.com/products"
+    private let categoryURL = "https://fakestoreapi.com/products/categories"
+   
+
+    
     
     // MARK: - Register User
     func registerUser(_ request: RegistrationRequest) -> AnyPublisher<Bool, Error> {
@@ -49,10 +54,10 @@ final class NetworkManager: NetworkManagerProtocol {
                         "username": request.username ?? "",
                         "email": request.email ?? "",
                         "city": request.city ?? "",
-                        "cart": [],        // Empty cart initially
-                        "favorites": []    // Empty favorites initially
+                        "cart": [],
+                        "favorites": []
                     ]
-                    
+                     
                     self.db.collection("users").document(user.uid).setData(userData) { firestoreError in
                         if let firestoreError = firestoreError {
                             promise(.failure(firestoreError))
@@ -112,4 +117,29 @@ final class NetworkManager: NetworkManagerProtocol {
         }
         .eraseToAnyPublisher()
     }
+    
+    func fetchProducts() async throws -> [Product] {
+        guard let url = URL(string: productURL) else {
+            throw URLError(.badURL)
+        }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              200..<300 ~= httpResponse.statusCode else {
+            throw URLError(.badServerResponse)
+        }
+        
+        let decoder = JSONDecoder()
+        return try decoder.decode([Product].self, from: data)
+    }
+    
+    func fetchCategories() async throws -> [ProductCategory] {
+        guard let url = URL(string: categoryURL) else {
+            throw URLError(.badURL)
+        }
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode([ProductCategory].self, from: data)
+    }
+    
 }

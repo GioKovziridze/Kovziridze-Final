@@ -8,7 +8,6 @@
 import UIKit
 
 extension UIStackView {
-    
     static func makeLabeledField(title: String, field: UITextField) -> UIStackView {
         let label = UILabel()
         label.text = title
@@ -65,3 +64,10 @@ final class SocialButton: UIButton {
     }
 }
 
+extension UIImage {
+    func resized(to size: CGSize) -> UIImage {
+        UIGraphicsImageRenderer(size: size).image { _ in
+            draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+}

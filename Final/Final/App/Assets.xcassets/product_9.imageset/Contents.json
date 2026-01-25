@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "cb55721fa549d027f49fe06a82e6d4ca.jpg",
+      "filename" : "61IBBVJvSDL._AC_SY879_t.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -17,5 +17,8 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
   }
 }
