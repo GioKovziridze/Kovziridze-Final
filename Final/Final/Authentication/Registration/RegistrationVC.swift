@@ -64,9 +64,8 @@ final class RegistrationVC: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("Register", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-        button.setTitleColor(.black, for: .normal)
-
-        button.backgroundColor = UIColor(red: 0.29, green: 0.0, blue: 0.51, alpha: 0.7)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemIndigo
         button.layer.cornerRadius = 28
         button.heightAnchor.constraint(equalToConstant: 56).isActive = true
         return button

@@ -98,6 +98,11 @@ struct OrderTrackingPage: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .onAppear {
+            fetchRoute()
+            startRouteMovement()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var destinationCoordinate: CLLocationCoordinate2D {

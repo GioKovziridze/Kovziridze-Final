@@ -142,7 +142,6 @@ final class LoginVC: UIViewController {
         loginButton.backgroundColor = .systemIndigo
         loginButton.layer.cornerRadius = 28
         loginButton.heightAnchor.constraint(equalToConstant: 56).isActive = true
-        loginButton.setTitleColor(.black, for: .normal)
         
         spinner.translatesAutoresizingMaskIntoConstraints = false
         loginButton.addSubview(spinner)

@@ -48,7 +48,6 @@ final class AuthContainerVC: UIViewController {
 
     private func bindViewModel() {
 
-        // View → ViewModel
         authSwitch.onModeChange = { [weak self] mode in
             guard let self else { return }
 
@@ -58,7 +57,6 @@ final class AuthContainerVC: UIViewController {
             self.viewModel.switchMode(vmMode)
         }
 
-        // ViewModel → View
         viewModel.onModeChange = { [weak self] mode in
             guard let self else { return }
 

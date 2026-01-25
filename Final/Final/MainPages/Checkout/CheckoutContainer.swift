@@ -68,7 +68,6 @@ struct CheckoutContainer: View {
 
         
     }
-    //TODO: - move these funcs
     
     // MARK: - Step Indicator
     private var stepIndicator: some View {
@@ -79,7 +78,6 @@ struct CheckoutContainer: View {
             stepLine()
             stepCircle(step: .tracking, title: "Tracking")
         }
-//        .padding(.bottom)
     }
     
     private func stepCircle(step: CheckoutStep, title: String) -> some View {

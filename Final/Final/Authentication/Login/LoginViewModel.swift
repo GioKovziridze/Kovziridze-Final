@@ -112,7 +112,6 @@ final class LoginViewModel {
                     return
                 }
                 
-                // Fetch user via UserStore
                 if let uid = result?.user.uid {
                     UserStore.shared.fetchUser(uid: uid) { [weak self] userModel in
                         self?.onSuccess?(userModel)

@@ -79,21 +79,34 @@ struct HomePage: View {
                     HStack(spacing: 6) {
                         Image(systemName: "location.fill")
                             .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(.gray)
+                            .foregroundColor(.indigo)
                         
                         Text(user.city)
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundColor(.black.opacity(0.75))
+                            .foregroundColor(.white.opacity(0.95))
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 6)
                     .background(
                         Capsule()
-                            .fill(Color.gray.opacity(0.12))
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.indigo.opacity(0.8), Color.purple.opacity(0.7)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
                     )
                     .overlay(
                         Capsule()
-                            .stroke(Color.gray.opacity(0.25), lineWidth: 0.5)
+                            .stroke(
+                                LinearGradient(
+                                    colors: [Color.indigo.opacity(0.6), Color.purple.opacity(0.5)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                ),
+                                lineWidth: 1
+                            )
                     )
                     
                 } else {
@@ -183,7 +196,6 @@ struct HomePage: View {
             .padding(.bottom, 12)
         }
         .frame(width: 360, height: 200)
-        .padding()
     }
 
 
