@@ -41,32 +41,6 @@ struct ProfilePage: View {
                         )
                     }
 
-                    // MARK: - Payments & Address
-                    sectionCard {
-                        profileRow(
-                            title: "Payment Methods",
-                            systemImage: "creditcard",
-                            destination: PaymentMethodsPage()
-                        )
-
-                        Divider()
-
-                        profileRow(
-                            title: "Shipping Addresses",
-                            systemImage: "location",
-                            destination: AddressesPage()
-                        )
-                    }
-
-                    // MARK: - Support
-                    sectionCard {
-                        profileRow(
-                            title: "Settings",
-                            systemImage: "gearshape",
-                            destination: SettingsPage()
-                        )
-                    }
-
                     // MARK: - Logout
                     logoutButton
                 }

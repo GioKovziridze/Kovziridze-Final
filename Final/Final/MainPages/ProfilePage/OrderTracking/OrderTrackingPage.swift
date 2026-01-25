@@ -11,7 +11,7 @@ import MapKit
 struct OrderTrackingPage: View {
     let order: Order
 
-    @Environment(\.dismiss) private var dismiss 
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject private var userStore = UserStore.shared
     @State private var courierCoordinate: CLLocationCoordinate2D
     @State private var route: MKRoute?
@@ -31,70 +31,186 @@ struct OrderTrackingPage: View {
     
     var body: some View {
         ZStack {
-            // Background gradient
             LinearGradient(
-                colors: [Color.indigo.opacity(0.9), Color(red: 0.18, green: 0.16, blue: 0.28)],
+                colors: [
+                    Color(red: 0.96, green: 0.96, blue: 0.98),
+                    Color(red: 0.94, green: 0.94, blue: 0.97)
+                ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
-            .ignoresSafeArea()
+            .ignoresSafeArea(.all)
             
-            VStack(spacing: 20) {
-                // MARK: - Map Card
-                ZStack {
-                    RoundedRectangle(cornerRadius: 28)
-                        .fill(Color.indigo.opacity(0.1))
-                        .shadow(color: Color.black.opacity(0.35), radius: 20, x: 0, y: 10)
-                    
+            VStack(spacing: 24) {
+                // MARK: - Map Card with refined borders
+                VStack(spacing: 0) {
                     OrderRouteMapView(
                         destination: destinationCoordinate,
                         courier: courierCoordinate,
                         route: route
                     )
-                    .clipShape(RoundedRectangle(cornerRadius: 28))
-                    .padding(6)
+                    .frame(height: 440)
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24)
+                            .strokeBorder(
+                                LinearGradient(
+                                    colors: [
+                                        Color.indigo.opacity(0.3),
+                                        Color.purple.opacity(0.2)
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 1.5
+                            )
+                    )
+                    .shadow(
+                        color: Color.indigo.opacity(0.08),
+                        radius: 20,
+                        x: 0,
+                        y: 8
+                    )
                 }
-                .frame(height: 420)
-                .padding(.horizontal)
+                .padding(.horizontal, 20)
                 
-                // MARK: - Status Card
-                VStack(spacing: 12) {
-                    Text("Order Status")
-                        .font(.title3.bold())
-                        .foregroundColor(.white)
+                // MARK: - Status Card with glassmorphic effect
+                VStack(spacing: 16) {
+                    HStack(spacing: 8) {
+                        Circle()
+                            .fill(statusColor)
+                            .frame(width: 8, height: 8)
+                            .shadow(color: statusColor.opacity(0.5), radius: 4)
+                        
+                        Text(currentStatus)
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.25))
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
+                    .background(
+                        Capsule()
+                            .fill(statusColor.opacity(0.12))
+                            .overlay(
+                                Capsule()
+                                    .strokeBorder(statusColor.opacity(0.3), lineWidth: 1)
+                            )
+                    )
                     
-                    Text(currentStatus)
-                        .font(.title2.weight(.semibold))
-                        .foregroundColor(statusColor)
-                        .padding(.vertical, 6)
-                        .padding(.horizontal, 24)
-                        .background(
-                            Capsule()
-                                .fill(statusColor.opacity(0.2))
+                    Rectangle()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.clear,
+                                    Color.indigo.opacity(0.1),
+                                    Color.clear
+                                ],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
                         )
+                        .frame(height: 1)
+                        .padding(.horizontal, 20)
                     
                     HStack(spacing: 12) {
-                        Image(systemName: "mappin.and.ellipse")
-                            .foregroundColor(.white.opacity(0.8))
-                        Text("Destination: \(order.address.addressLine.isEmpty ? "Your Address" : order.address.addressLine)")
-                            .foregroundColor(.white.opacity(0.8))
-                            .font(.subheadline)
+                        ZStack {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [
+                                            Color.indigo.opacity(0.1),
+                                            Color.purple.opacity(0.08)
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 36, height: 36)
+                            
+                            Image(systemName: "mappin.circle.fill")
+                                .font(.system(size: 16))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        colors: [Color.indigo, Color.purple],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Delivery Address")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.gray)
+                            
+                            Text(order.address.addressLine.isEmpty ? "Your Address" : order.address.addressLine)
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.25))
+                        }
+                        
+                        Spacer()
                     }
+                    .padding(.horizontal, 20)
                 }
                 .frame(maxWidth: .infinity)
-                .padding()
+                .padding(.vertical, 24)
                 .background(
                     RoundedRectangle(cornerRadius: 24)
-                        .fill(Color.indigo.opacity(0.4)))
+                        .fill(Color.white.opacity(0.7))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 24)
+                                .strokeBorder(
+                                    LinearGradient(
+                                        colors: [
+                                            Color.indigo.opacity(0.15),
+                                            Color.purple.opacity(0.1)
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: 1
+                                )
+                        )
+                        .shadow(
+                            color: Color.indigo.opacity(0.06),
+                            radius: 16,
+                            x: 0,
+                            y: 4
+                        )
+                )
+                .padding(.horizontal, 20)
+                
+                Spacer()
             }
+            .padding(.top, 16)
         }
-        .padding()
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Done") {
+                Button {
                     dismiss()
+                } label: {
+                    ZStack {
+                        Circle()
+                            .fill(Color.white.opacity(0.9))
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(Color.indigo.opacity(0.15), lineWidth: 1)
+                            )
+                            .frame(width: 36, height: 36)
+                            .shadow(
+                                color: Color.black.opacity(0.06),
+                                radius: 8,
+                                x: 0,
+                                y: 2
+                            )
+                        
+                        Image(systemName: "xmark")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(Color(red: 0.3, green: 0.3, blue: 0.35))
+                    }
                 }
-                .foregroundColor(.black)
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -102,7 +218,6 @@ struct OrderTrackingPage: View {
             fetchRoute()
             startRouteMovement()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var destinationCoordinate: CLLocationCoordinate2D {
@@ -118,9 +233,9 @@ struct OrderTrackingPage: View {
     
     private var statusColor: Color {
         switch currentStatus {
-        case "Delivered": return .green
-        case "Nearby": return .yellow
-        default: return .orange
+        case "Delivered": return Color(red: 0.2, green: 0.78, blue: 0.35)
+        case "Nearby": return Color(red: 1.0, green: 0.8, blue: 0.0)
+        default: return Color(red: 1.0, green: 0.58, blue: 0.0)
         }
     }
 }
@@ -160,6 +275,7 @@ extension OrderTrackingPage {
             updateStatus()
         }
     }
+    
     func updateStatus() {
         let latDiff = abs(destinationCoordinate.latitude - courierCoordinate.latitude)
         let lngDiff = abs(destinationCoordinate.longitude - courierCoordinate.longitude)
@@ -178,7 +294,6 @@ extension OrderTrackingPage {
         userStore.updateOrderStatus(orderID: order.id, status: newStatus)
     }
 
-    
     private func fetchRoute() {
         let request = MKDirections.Request()
         request.source = MKMapItem(placemark: MKPlacemark(coordinate: courierCoordinate))
@@ -198,9 +313,6 @@ extension OrderTrackingPage {
             self.routeIndex = 0
         }
     }
-
-
-
 }
 
 //MARK: - Destination Pin
@@ -211,8 +323,8 @@ struct DestinationPin: View {
             .foregroundColor(.green)
     }
 }
-//MARK: - CourierDot
 
+//MARK: - CourierDot
 struct CourierDot: View {
     @State private var pulse = false
 

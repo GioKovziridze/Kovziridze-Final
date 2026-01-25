@@ -69,18 +69,18 @@ final class AuthContainerVC: UIViewController {
         }
     }
 
-    private func show(_ vc: UIViewController) {
+    private func show(_ viewController: UIViewController) {
         children.forEach {
             $0.willMove(toParent: nil)
             $0.view.removeFromSuperview()
             $0.removeFromParent()
         }
 
-        addChild(vc)
-        containerView.addSubview(vc.view)
-        vc.view.frame = containerView.bounds
-        vc.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        vc.didMove(toParent: self)
+        addChild(viewController)
+        containerView.addSubview(viewController.view)
+        viewController.view.frame = containerView.bounds
+        viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        viewController.didMove(toParent: self)
     }
 }
 #Preview {

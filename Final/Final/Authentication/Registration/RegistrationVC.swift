@@ -62,12 +62,18 @@ final class RegistrationVC: UIViewController {
 
     private let registerButton: UIButton = {
         let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Register", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .systemIndigo
         button.layer.cornerRadius = 28
-        button.heightAnchor.constraint(equalToConstant: 56).isActive = true
+        
+        button.layer.shadowColor = UIColor.systemIndigo.cgColor
+        button.layer.shadowOpacity = 0.25
+        button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.layer.shadowRadius = 12
+        
         return button
     }()
 
@@ -160,6 +166,7 @@ final class RegistrationVC: UIViewController {
         contentStack.addArrangedSubview(
             UIStackView.makeLabeledField(title: "Confirm Password", field: confirmPasswordField)
         )
+        setupRegisterButton()
 
         contentStack.addArrangedSubview(errorLabel)
         contentStack.setCustomSpacing(32, after: errorLabel)
@@ -169,13 +176,35 @@ final class RegistrationVC: UIViewController {
         contentStack.addArrangedSubview(loginHintLabel)
         
         spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.color = .white
         registerButton.addSubview(spinner)
+        
         NSLayoutConstraint.activate([
+            registerButton.heightAnchor.constraint(equalToConstant: 56),
             spinner.centerYAnchor.constraint(equalTo: registerButton.centerYAnchor),
-            spinner.trailingAnchor.constraint(equalTo: registerButton.trailingAnchor, constant: -16)
+            spinner.trailingAnchor.constraint(equalTo: registerButton.trailingAnchor, constant: -20)
         ])
     }
+    
+    private func setupRegisterButton() {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [
+            UIColor.systemIndigo.cgColor,
+            UIColor.systemPurple.cgColor
+        ]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientLayer.cornerRadius = 28
+        registerButton.layer.insertSublayer(gradientLayer, at: 0)
+    }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if let gradientLayer = registerButton.layer.sublayers?.first as? CAGradientLayer {
+            gradientLayer.frame = registerButton.bounds
+        }
+    }
+    
     // MARK: - Actions
 
     @objc private func registerTapped() {

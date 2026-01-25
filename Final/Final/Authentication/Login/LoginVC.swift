@@ -48,13 +48,13 @@ final class LoginVC: UIViewController {
 
     private let googleButton = SocialButton(
         title: "Google",
-        image: UIImage(named: "google")
+        image: UIImage(named: "google_icon")?.resized(to: CGSize(width: 24, height: 24))
     )
 
-    private let appleButton = SocialButton(
-        title: "Apple",
-        image: UIImage(systemName: "applelogo")
-    )
+//    private let appleButton = SocialButton(
+//        title: "Apple",
+//        image: UIImage(systemName: "applelogo")
+//    )
 
     private let bottomLabel = UILabel()
 
@@ -139,21 +139,46 @@ final class LoginVC: UIViewController {
         loginButton.setTitle("Login", for: .normal)
         loginButton.setTitleColor(.white, for: .normal)
         loginButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-        loginButton.backgroundColor = .systemIndigo
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [
+            UIColor.systemIndigo.cgColor,
+            UIColor.systemPurple.cgColor
+        ]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientLayer.cornerRadius = 28
+        loginButton.layer.insertSublayer(gradientLayer, at: 0)
+        
         loginButton.layer.cornerRadius = 28
-        loginButton.heightAnchor.constraint(equalToConstant: 56).isActive = true
+        loginButton.clipsToBounds = true
+        
+        loginButton.layer.shadowColor = UIColor.systemIndigo.cgColor
+        loginButton.layer.shadowOpacity = 0.3
+        loginButton.layer.shadowOffset = CGSize(width: 0, height: 8)
+        loginButton.layer.shadowRadius = 16
+        loginButton.layer.masksToBounds = false
         
         spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.color = .white
         loginButton.addSubview(spinner)
+        
         NSLayoutConstraint.activate([
+            loginButton.heightAnchor.constraint(equalToConstant: 56),
             spinner.centerYAnchor.constraint(equalTo: loginButton.centerYAnchor),
-            spinner.trailingAnchor.constraint(equalTo: loginButton.trailingAnchor, constant: -16)
+            spinner.trailingAnchor.constraint(equalTo: loginButton.trailingAnchor, constant: -20)
         ])
         
-
         loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
-
         contentStack.addArrangedSubview(loginButton)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if let gradientLayer = loginButton.layer.sublayers?.first as? CAGradientLayer {
+            gradientLayer.frame = loginButton.bounds
+        }
     }
 
     private func setupDivider() {
@@ -167,14 +192,23 @@ final class LoginVC: UIViewController {
     }
 
     private func setupSocialButtons() {
-        let stack = UIStackView(arrangedSubviews: [googleButton, appleButton])
-        stack.axis = .horizontal
-        stack.spacing = 16
-        stack.distribution = .fillEqually
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        containerView.addSubview(googleButton)
+        googleButton.translatesAutoresizingMaskIntoConstraints = false
         
         googleButton.addTarget(self, action: #selector(googleSignInTapped), for: .touchUpInside)
-
-        contentStack.addArrangedSubview(stack)
+        
+        NSLayoutConstraint.activate([
+            googleButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            googleButton.topAnchor.constraint(equalTo: containerView.topAnchor),
+            googleButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            googleButton.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.8),
+            googleButton.heightAnchor.constraint(equalToConstant: 52)
+        ])
+        
+        contentStack.addArrangedSubview(containerView)
     }
     
     @objc private func googleSignInTapped() {

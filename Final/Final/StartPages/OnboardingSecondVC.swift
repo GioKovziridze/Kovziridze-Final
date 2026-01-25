@@ -205,7 +205,7 @@ final class OnboardingSecondVC: UIViewController {
             
             authButton.leadingAnchor.constraint(equalTo: bottomCard.leadingAnchor, constant: 32),
             authButton.trailingAnchor.constraint(equalTo: bottomCard.trailingAnchor, constant: -32),
-            authButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32),
+            authButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -36),
             authButton.heightAnchor.constraint(equalToConstant: 56)
         ])
     }
@@ -228,7 +228,7 @@ final class OnboardingSecondVC: UIViewController {
         
         for (x, y, size) in positions {
             let circle = UIView()
-            circle.backgroundColor = UIColor.systemIndigo.withAlphaComponent(0.7)
+            circle.backgroundColor = UIColor.systemIndigo.withAlphaComponent(0.3)
             circle.layer.cornerRadius = size / 2
             circle.frame = CGRect(x: x, y: y, width: size, height: size)
             decorativeDotsView.addSubview(circle)

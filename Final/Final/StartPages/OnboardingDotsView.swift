@@ -46,7 +46,7 @@ final class OnboardingDotsView: UIStackView {
     func setActiveDot(index: Int, animated: Bool = true) {
         for (i, dot) in dots.enumerated() {
             let isActive = i == index
-            dot.backgroundColor = isActive ? UIColor.systemGreen.withAlphaComponent(0.6) : .systemGray4
+            dot.backgroundColor = isActive ? UIColor.systemIndigo.withAlphaComponent(0.6) : .systemGray4
             widthConstraints[i].constant = isActive ? activeWidth : inactiveWidth
         }
 

@@ -62,6 +62,22 @@ final class TabBarController: UITabBarController {
         tabBar.isTranslucent = true
         tabBar.tintColor = UIColor.systemIndigo
         tabBar.unselectedItemTintColor = UIColor.systemIndigo.withAlphaComponent(0.45)
+        
+        tabBar.itemPositioning = .centered
+        tabBar.itemSpacing = 0
+        tabBar.itemWidth = 60
+        
+        let appearance = UITabBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = .clear
+        
+        let selectedAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 11, weight: .semibold),
+            .foregroundColor: UIColor.systemIndigo
+        ]
+        appearance.stackedLayoutAppearance.selected.titleTextAttributes = selectedAttributes
+        appearance.stackedLayoutAppearance.selected.iconColor = UIColor.systemIndigo
+        
 
         backgroundView = UIView(frame: .zero)
         backgroundView.backgroundColor = UIColor(
@@ -79,13 +95,14 @@ final class TabBarController: UITabBarController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let width = tabBar.frame.width - 25
+        let horizontalMargin: CGFloat = 40
+        let width = tabBar.frame.width - (horizontalMargin * 2)
         let height = customTabBarHeight
-        let x: CGFloat = 20
+        let x: CGFloat = horizontalMargin
         let y = view.frame.height - height - floatingMargin
-
+        
         backgroundView.frame = CGRect(x: x, y: y, width: width, height: height)
-        tabBar.frame = CGRect(x: 0, y: view.frame.height - height - floatingMargin, width: view.frame.width, height: height)
+        tabBar.frame = CGRect(x: horizontalMargin, y: y, width: width, height: height)
     }
 }
 #Preview{
