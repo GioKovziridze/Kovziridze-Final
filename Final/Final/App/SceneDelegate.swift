@@ -29,14 +29,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         
         if hasSeenOnboarding {
+            let authContainer = AuthContainerVC()
+            navController.setViewControllers([authContainer], animated: false)
+        } else {
             let onboardingVC = OnboardingPageVC(
                 transitionStyle: .scroll,
                 navigationOrientation: .horizontal
             )
             navController.setViewControllers([onboardingVC], animated: false)
-        } else {
-            let authContainer = AuthContainerVC()
-            navController.setViewControllers([authContainer], animated: false)
         }
         
         window.rootViewController = navController
